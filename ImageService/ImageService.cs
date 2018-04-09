@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 
 namespace ImageService
 {
+    //test
     public enum ServiceState
     {
         SERVICE_STOPPED = 0x00000001,
