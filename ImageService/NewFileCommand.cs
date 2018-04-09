@@ -20,6 +20,10 @@ namespace ImageService.Commands
         public string Execute(string[] args, out bool result)
         {
             // The String Will Return the New Path if result = true, and will return the error message
+
+            //temp
+            result = true;
+            return null;
         }
     }
 }
