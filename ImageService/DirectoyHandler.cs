@@ -20,6 +20,12 @@ namespace ImageService.Controller.Handlers
         private ILoggingService m_logging;
         private FileSystemWatcher m_dirWatcher;             // The Watcher of the Dir
         private string m_path;                              // The Path of directory
+
+        public DirectoyHandler(IImageController m_controller, ILoggingService m_logging)
+        {
+            this.m_controller = m_controller;
+            this.m_logging = m_logging;
+        }
         #endregion
 
         public event EventHandler<DirectoryCloseEventArgs> DirectoryClose;              // The Event That Notifies that the Directory is being closed
