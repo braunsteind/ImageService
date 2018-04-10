@@ -9,6 +9,8 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using ImageService.Logging;
+using ImageService.Logging.Modal;
 
 namespace ImageService
 {
@@ -42,6 +44,9 @@ namespace ImageService
         [DllImport("advapi32.dll", SetLastError = true)]
         private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
 
+        private ILoggingService logger;
+
+
         public ImageService()
         {
             InitializeComponent();
@@ -53,6 +58,8 @@ namespace ImageService
             }
             eventLog1.Source = "MySource";
             eventLog1.Log = "MyNewLog";
+            this.logger = new LoggingService();
+            this.logger.MessageRecieved += SendMessage;
         }
 
         protected override void OnStart(string[] args)
@@ -95,6 +102,35 @@ namespace ImageService
         protected override void OnContinue()
         {
             eventLog1.WriteEntry("In OnContinue.");
+        }
+
+        /// <summary>
+        /// Write to log
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="msg">The message</param>
+        public void SendMessage(Object sender, MessageRecievedEventArgs m)
+        {
+            eventLog1.WriteEntry(m.Message, EnumToLog(m.Status));
+        }
+        
+        /// <summary>
+        /// Convert from enum type to log entry type
+        /// </summary>
+        /// <param name="status">The status of the message</param>
+        /// <returns></returns>
+        private EventLogEntryType EnumToLog(MessageTypeEnum status)
+        {
+            switch (status)
+            {
+                case MessageTypeEnum.FAIL:
+                    return EventLogEntryType.Error;
+                case MessageTypeEnum.WARNING:
+                    return EventLogEntryType.Warning;
+                case MessageTypeEnum.INFO:
+                default:
+                    return EventLogEntryType.Information;
+            }
         }
     }
 }
