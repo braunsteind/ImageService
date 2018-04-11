@@ -47,28 +47,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandEnum.cs" />
-    <Compile Include="CommandRecievedEventArgs.cs" />
-    <Compile Include="DirectoryCloseEventArgs.cs" />
-    <Compile Include="DirectoyHandler.cs" />
-    <Compile Include="ICommand.cs" />
-    <Compile Include="IDirectoryHandler.cs" />
-    <Compile Include="IImageController.cs" />
-    <Compile Include="IImageServiceModal.cs" />
-    <Compile Include="Logging\ILoggingService.cs" />
-    <Compile Include="ImageController.cs" />
-    <Compile Include="ImageServer.cs" />
-    <Compile Include="ImageService.cs">
+    <Compile Include="ImageService.Infrastructure\Enums\CommandEnum.cs" />
+    <Compile Include="ImageService\Modal\Event\CommandRecievedEventArgs.cs" />
+    <Compile Include="ImageService\Modal\Event\DirectoryCloseEventArgs.cs" />
+    <Compile Include="ImageService\Controller\Handlers\DirectoyHandler.cs" />
+    <Compile Include="ImageService\Commends\ICommand.cs" />
+    <Compile Include="ImageService\Controller\Handlers\IDirectoryHandler.cs" />
+    <Compile Include="ImageService\Controller\IImageController.cs" />
+    <Compile Include="ImageService\Modal\IImageServiceModal.cs" />
+    <Compile Include="ImageService.Logging\ILoggingService.cs" />
+    <Compile Include="ImageService\Controller\ImageController.cs" />
+    <Compile Include="ImageService\Server\ImageServer.cs" />
+    <Compile Include="ImageService\ImageService.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ImageService.Designer.cs">
+    <Compile Include="ImageService\ImageService.Designer.cs">
       <DependentUpon>ImageService.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImageServiceModal.cs" />
-    <Compile Include="Logging\LoggingService.cs" />
-    <Compile Include="MessageRecievedEventArgs.cs" />
-    <Compile Include="MessageTypeEnum.cs" />
-    <Compile Include="NewFileCommand.cs" />
+    <Compile Include="ImageService\Modal\ImageServiceModal.cs" />
+    <Compile Include="ImageService.Logging\LoggingService.cs" />
+    <Compile Include="ImageService.Logging\Modal\MessageRecievedEventArgs.cs" />
+    <Compile Include="ImageService.Logging\Modal\MessageTypeEnum.cs" />
+    <Compile Include="ImageService\Commends\NewFileCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
@@ -79,16 +79,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="ImageService\App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ImageService.resx">
+    <EmbeddedResource Include="ImageService\ImageService.resx">
       <DependentUpon>ImageService.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProjectInstaller.resx">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

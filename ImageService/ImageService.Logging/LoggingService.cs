@@ -17,11 +17,11 @@ namespace ImageService.Logging
         /// <summary>
         /// Logging the message
         /// </summary>
-        /// <param name="message"> the message to log </param>
-        /// <param name="type"> the type of message </param>
+        /// <param name="message">The message to log</param>
+        /// <param name="type">The type of message</param>
         public void Log(string message, MessageTypeEnum type)
         {
-            MessageRecieved.Invoke(this, new MessageRecievedEventArgs(message, type));
+            MessageRecieved.Invoke(this, new MessageRecievedEventArgs(type, message));
         }
     }
 }
