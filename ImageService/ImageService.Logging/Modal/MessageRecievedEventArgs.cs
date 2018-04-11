@@ -17,5 +17,11 @@ namespace ImageService.Logging.Modal
         /// 
         /// </summary>
         public string Message { get; set; }
+
+        public MessageRecievedEventArgs(MessageTypeEnum status, string message)
+        {
+            this.Status = status;
+            this.Message = message;
+        }
     }
 }
