@@ -5,6 +5,7 @@ using ImageService.Logging;
 using ImageService.Modal;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,12 +23,11 @@ namespace ImageService.Server
         public event EventHandler<CommandRecievedEventArgs> CommandRecieved;          // The event that notifies about a new Command being recieved
         public event EventHandler<DirectoryCloseEventArgs> CloseServer;
         #endregion
-
         /// <summary>
-        /// Server constuctor
+        /// ImageServer ctr.
         /// </summary>
-        /// <param name="controller"></param>
-        /// <param name="logging"></param>
+        /// <param name="controller">IImageController obj</param>
+        /// <param name="logging">ILoggingService obj</param>
         public ImageServer(IImageController controller, ILoggingService logging)
         {
             this.m_controller = controller;
@@ -46,11 +46,10 @@ namespace ImageService.Server
                 }
             }
         }
-
         /// <summary>
-        /// 
+        /// CreateHandler function.
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path">the path the handler is on charge</param>
         private void CreateHandler(string path)
         {
             IDirectoryHandler handler = new DirectoyHandler(m_logging, m_controller, path);
@@ -59,10 +58,9 @@ namespace ImageService.Server
             handler.StartHandleDirectory(path);
             this.m_logging.Log("Handler was created for directory: " + path, Logging.Modal.MessageTypeEnum.INFO);
         }
-
-
         /// <summary>
-        /// 
+        /// OnCloseServer function.
+        /// defines what happens when we close the server
         /// </summary>
         public void OnCloseServer()
         {
@@ -77,7 +75,5 @@ namespace ImageService.Server
                 this.m_logging.Log("OnColeServer Exception: " + ex.ToString(), Logging.Modal.MessageTypeEnum.FAIL);
             }
         }
-
     }
 }
-// TO BE CHANGED!!

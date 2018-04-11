@@ -11,6 +11,10 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using ImageService.Logging;
 using ImageService.Logging.Modal;
+using ImageService.Controller;
+using ImageService.Server;
+using ImageService.Modal;
+using System.Configuration;
 
 namespace ImageService
 {
@@ -44,8 +48,10 @@ namespace ImageService
         [DllImport("advapi32.dll", SetLastError = true)]
         private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
 
-        private ILoggingService logger;
-
+        private ImageServer m_imageServer;          // The Image Server
+        private IImageServiceModal modal;
+        private IImageController controller;
+        private ILoggingService logging;
 
         public ImageService()
         {
@@ -58,14 +64,19 @@ namespace ImageService
             }
             eventLog1.Source = "MySource";
             eventLog1.Log = "MyNewLog";
-            this.logger = new LoggingService();
-            this.logger.MessageRecieved += SendMessage;
+            this.logging = new LoggingService();
+            this.logging.MessageRecieved += SendMessage;
         }
 
         protected override void OnStart(string[] args)
         {
             // Update the service state to Start Pending.  
             ServiceStatus serviceStatus = new ServiceStatus();
+            string OutputFolder = ConfigurationManager.AppSettings.Get("OutputDir");
+            int ThumbnailSize = Int32.Parse(ConfigurationManager.AppSettings.Get("ThumbnailSize"));
+            this.modal = new ImageServiceModal(OutputFolder, ThumbnailSize);
+            this.controller = new ImageController(this.modal);
+            this.m_imageServer = new ImageServer(this.controller, this.logging);
             serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
             serviceStatus.dwWaitHint = 100000;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
