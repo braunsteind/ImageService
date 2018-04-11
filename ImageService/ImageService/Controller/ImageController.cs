@@ -17,19 +17,24 @@ namespace ImageService.Controller
 
         public ImageController(IImageServiceModal modal)
         {
-            m_modal = modal;                    // Storing the Modal Of The System
-            commands = new Dictionary<int, ICommand>()
-            {
-                // For Now will contain NEW_FILE_COMMAND
-            };
+            //Storing the Modal Of The System
+            m_modal = modal;
+            commands = new Dictionary<int, ICommand>();
+
+            //For Now will contain NEW_FILE_COMMAND
+            this.commands[((int)CommandEnum.NewFileCommand)] = new NewFileCommand(this.m_modal);
+
         }
+
         public string ExecuteCommand(int commandID, string[] args, out bool resultSuccesful)
         {
-            // Write Code Here
-
-            //temp
-            resultSuccesful = true;
-            return null;
+            bool temp;
+            //run the command
+            string message = this.commands[commandID].Execute(args, out temp);
+            //set result
+            resultSuccesful = temp;
+            //return message
+            return message;
         }
     }
 }
