@@ -32,48 +32,42 @@ namespace ImageService.Server
         {
             this.m_controller = controller;
             this.m_logging = logging;
-            string[] directories = (ConfigurationManager.AppSettings.Get("Handler").Split(';'));
+ 
+            //creating handlers for each directory
+            this.ExtractHandlersFromConfig();       
+        }
 
-            foreach (string path in directories)
+        /// <summary>
+        /// Extracting the folders 
+        /// </summary>
+        private void ExtractHandlersFromConfig()
+        {
+            string[] foldersToListen = (ConfigurationManager.AppSettings.Get("Handler").Split(';'));
+            foreach (string directory in foldersToListen)
             {
-                try
-                {
-                    this.CreateHandler(path);
-                }
-                catch (Exception ex)
-                {
-                    this.m_logging.Log("Error while creating handler for directory: " + path + " because:" + ex.ToString(), Logging.Modal.MessageTypeEnum.FAIL);
-                }
+                this.CreateHandler(directory);
             }
         }
+
+
         /// <summary>
         /// CreateHandler function.
         /// </summary>
         /// <param name="path">the path the handler is on charge</param>
         private void CreateHandler(string path)
         {
-            IDirectoryHandler handler = new DirectoyHandler(m_logging, m_controller, path);
+            IDirectoryHandler handler = new DirectoyHandler(m_logging, m_controller);
             CommandRecieved += handler.OnCommandRecieved;
             this.CloseServer += handler.OnCloseHandler;
             handler.StartHandleDirectory(path);
             this.m_logging.Log("Handler was created for directory: " + path, Logging.Modal.MessageTypeEnum.INFO);
         }
-        /// <summary>
-        /// OnCloseServer function.
-        /// defines what happens when we close the server
-        /// </summary>
-        public void OnCloseServer()
+
+
+        public void ServerClosing()
         {
-            try
-            {
-                m_logging.Log("Enter OnCloseServer", Logging.Modal.MessageTypeEnum.INFO);
                 CloseServer?.Invoke(this, null);
-                m_logging.Log("Leave OnCloseServer", Logging.Modal.MessageTypeEnum.INFO);
-            }
-            catch (Exception ex)
-            {
-                this.m_logging.Log("OnColeServer Exception: " + ex.ToString(), Logging.Modal.MessageTypeEnum.FAIL);
-            }
+                this.m_logging.Log("Closing server", Logging.Modal.MessageTypeEnum.INFO);
         }
     }
 }

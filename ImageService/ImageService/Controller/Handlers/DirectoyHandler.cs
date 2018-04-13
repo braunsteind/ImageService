@@ -38,11 +38,10 @@ namespace ImageService.Controller.Handlers
         /// <param name="logging">IImageLogger</param>
         /// <param name="controller">The Image Processing Controller</param>
         /// <param name="path">The Path of directory</param>
-        public DirectoyHandler(ILoggingService logging, IImageController controller, string path)
+        public DirectoyHandler(ILoggingService logging, IImageController controller)
         {
             this.m_logging = logging;
             this.m_controller = controller;
-            this.m_path = path;
             this.m_dirWatcher = new FileSystemWatcher(this.m_path);
         }
 
@@ -74,6 +73,7 @@ namespace ImageService.Controller.Handlers
         /// <param name="dirPath">The path of the directory.</param>
         public void StartHandleDirectory(string dirPath)
         {
+            this.m_path = dirPath;
             m_logging.Log("enter StartHandleDirectory" + " " + dirPath, MessageTypeEnum.INFO);
             // add all images in the directory to the output directory.
             this.m_dirWatcher.NotifyFilter = NotifyFilters.FileName;
