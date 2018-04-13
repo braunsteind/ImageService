@@ -25,7 +25,7 @@ namespace ImageService.Controller.Handlers
         private FileSystemWatcher m_dirWatcher;             // The Watcher of the Dir
         private string m_path;                              // The Path of directory
         private readonly string[] validExtensions =
-            { ".jpg", ".png", ".gif", ".bmp" };             //The only file types are relevant.
+            { ".jpg", ".png", ".gif", ".bmp" , ".JPG", ".PNG", ".GIF", ".BMP"};             //The only file types are relevant.
         #endregion
 
         #region Events

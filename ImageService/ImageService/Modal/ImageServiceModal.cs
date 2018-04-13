@@ -40,10 +40,13 @@ namespace ImageService.Modal
                 Image image = Image.FromFile(path);
                 //get the thumbnail
                 Image thumb = image.GetThumbnailImage(this.m_thumbnailSize, this.m_thumbnailSize, () => false, IntPtr.Zero);
+                image.Save(copyPath);
                 //save the thumbnail
                 thumb.Save(Path.ChangeExtension(copyThumb, "thumb"));
                 //save the image in the copy path
-                image.Save(copyPath);
+              
+                image.Dispose();
+                File.Delete(path);
 
                 if (File.Exists(copyPath) && File.Exists(Path.ChangeExtension(copyThumb, "thumb")))
                 {
@@ -67,7 +70,7 @@ namespace ImageService.Modal
             di.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
 
             //get month and year
-            DateTime dt = File.GetCreationTime(path);
+            DateTime dt = File.GetLastWriteTime(path);
             int month = dt.Month;
             int year = dt.Year;
 
