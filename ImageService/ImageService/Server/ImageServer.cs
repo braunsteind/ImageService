@@ -45,7 +45,15 @@ namespace ImageService.Server
             string[] foldersToListen = (ConfigurationManager.AppSettings.Get("Handler").Split(';'));
             foreach (string directory in foldersToListen)
             {
-                this.CreateHandler(directory);
+                try
+                {
+                    this.CreateHandler(directory);
+
+                }
+                catch (Exception ex)
+                {
+                    this.m_logging.Log("Error while creating handler for directory: " + directory + " because:" + ex.ToString(), Logging.Modal.MessageTypeEnum.FAIL);
+                }
             }
         }
 
@@ -56,7 +64,7 @@ namespace ImageService.Server
         /// <param name="path">the path the handler is on charge</param>
         private void CreateHandler(string path)
         {
-            IDirectoryHandler handler = new DirectoyHandler(m_logging, m_controller);
+            IDirectoryHandler handler = new DirectoyHandler(m_logging, m_controller, path);
             CommandRecieved += handler.OnCommandRecieved;
             this.CloseServer += handler.OnCloseHandler;
             handler.StartHandleDirectory(path);
