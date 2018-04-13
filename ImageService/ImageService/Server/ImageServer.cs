@@ -23,11 +23,12 @@ namespace ImageService.Server
         public event EventHandler<CommandRecievedEventArgs> CommandRecieved;          // The event that notifies about a new Command being recieved
         public event EventHandler<DirectoryCloseEventArgs> CloseServer;
         #endregion
+ 
         /// <summary>
-        /// ImageServer ctr.
+        /// Server constuctor
         /// </summary>
-        /// <param name="controller">IImageController obj</param>
-        /// <param name="logging">ILoggingService obj</param>
+        /// <param name="controller"></param>
+        /// <param name="logging"></param>
         public ImageServer(IImageController controller, ILoggingService logging)
         {
             this.m_controller = controller;
@@ -42,36 +43,34 @@ namespace ImageService.Server
         /// </summary>
         private void ExtractHandlersFromConfig()
         {
+            //extract folders from App.config
             string[] foldersToListen = (ConfigurationManager.AppSettings.Get("Handler").Split(';'));
+            //loop on all folders
             foreach (string directory in foldersToListen)
             {
-                try
-                {
+                    //create handler for every directory
                     this.CreateHandler(directory);
-
-                }
-                catch (Exception ex)
-                {
-                    this.m_logging.Log("Error while creating handler for directory: " + directory + " because:" + ex.ToString(), Logging.Modal.MessageTypeEnum.FAIL);
-                }
             }
         }
 
-
         /// <summary>
-        /// CreateHandler function.
+        /// creating handler for a specific directory
         /// </summary>
-        /// <param name="path">the path the handler is on charge</param>
+        /// <param name="path"></param>
         private void CreateHandler(string path)
         {
+            //creating the handler
             IDirectoryHandler handler = new DirectoyHandler(m_logging, m_controller, path);
             CommandRecieved += handler.OnCommandRecieved;
+            //register the handler to CloseServer event
             this.CloseServer += handler.OnCloseHandler;
             handler.StartHandleDirectory(path);
             this.m_logging.Log("Handler was created for directory: " + path, Logging.Modal.MessageTypeEnum.INFO);
         }
 
-
+        /// <summary>
+        /// Dealing with server closing
+        /// </summary>
         public void ServerClosing()
         {
                 CloseServer?.Invoke(this, null);
