@@ -24,8 +24,8 @@ namespace ImageService.Controller.Handlers
         private ILoggingService m_logging;                  // The logger
         private FileSystemWatcher m_dirWatcher;             // The Watcher of the Dir
         private string m_path;                              // The Path of directory
-        private readonly string[] validExtensions =
-            { ".jpg", ".png", ".gif", ".bmp" , ".JPG", ".PNG", ".GIF", ".BMP"};             //The only file types are relevant.
+        private readonly string[] relevantFiles =
+            { ".jpg", ".JPG", ".gif", ".GIF" , ".bmp", ".BMP", ".png", ".PNG"};             //The only file types are relevant.
         #endregion
 
         #region Events
@@ -96,7 +96,7 @@ namespace ImageService.Controller.Handlers
             this.m_logging.Log("Enterd M_durWatcher_Created with: " + e.FullPath, MessageTypeEnum.INFO);
             string extension = Path.GetExtension(e.FullPath);
             // check that the file is an image.
-            if (this.validExtensions.Contains(extension))
+            if (this.relevantFiles.Contains(extension))
             {
                 string[] args = { e.FullPath };
                 CommandRecievedEventArgs commandRecievedEventArgs =

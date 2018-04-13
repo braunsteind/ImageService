@@ -18,7 +18,6 @@ using System.Configuration;
 
 namespace ImageService
 {
-    //Daniel The King
     public enum ServiceState
     {
         SERVICE_STOPPED = 0x00000001,
@@ -42,6 +41,9 @@ namespace ImageService
         public int dwWaitHint;
     };
 
+    /// <summary>
+    /// ImageService class
+    /// </summary>
     public partial class ImageService : ServiceBase
     {
         private int eventId = 1;
@@ -53,85 +55,113 @@ namespace ImageService
         private IImageController controller;
         private ILoggingService logging;
 
+        /// <summary>
+        /// Service constructor
+        /// </summary>
         public ImageService()
         {
             InitializeComponent();
             eventLog1 = new System.Diagnostics.EventLog();
-            if (!System.Diagnostics.EventLog.SourceExists("MySource"))
-            {
-                System.Diagnostics.EventLog.CreateEventSource(
-                    "MySource", "MyNewLog");
-            }
-            eventLog1.Source = "MySource";
-            eventLog1.Log = "MyNewLog";
+            eventLog1.Source = "ImageServiceSource";
+            eventLog1.Log = "ImageServiceLog";
             this.logging = new LoggingService();
             this.logging.MessageRecieved += SendMessage;
         }
 
+        /// <summary>
+        /// Handling the start of the server
+        /// </summary>
+        /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            // Update the service state to Start Pending.  
+            //start pending
             ServiceStatus serviceStatus = new ServiceStatus();
-            string OutputFolder = ConfigurationManager.AppSettings.Get("OutputDir");
-            int ThumbnailSize = Int32.Parse(ConfigurationManager.AppSettings.Get("ThumbnailSize"));
-            this.modal = new ImageServiceModal(OutputFolder, ThumbnailSize);
-            this.controller = new ImageController(this.modal);
-            this.m_imageServer = new ImageServer(this.controller, this.logging);
             serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
             serviceStatus.dwWaitHint = 100000;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+
+            //logging the server's starting
             eventLog1.WriteEntry("In OnStart");
+
+            //extracting relevant information from App.config file
+            string backupFolder = ConfigurationManager.AppSettings.Get("OutputDir");
+            int sizeOfThumbnail = Int32.Parse(ConfigurationManager.AppSettings.Get("ThumbnailSize"));
+
+            
+            //creating the modal
+            this.modal = new ImageServiceModal(backupFolder, sizeOfThumbnail);
+            //creating controller
+            this.controller = new ImageController(this.modal);
+            //creating the server, using the modal and controller
+            this.m_imageServer = new ImageServer(this.controller, this.logging);   
+            
             // Set up a timer to trigger every minute.  
             System.Timers.Timer timer = new System.Timers.Timer();
             timer.Interval = 60000; // 60 seconds  
             timer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnTimer);
             timer.Start();
-            // Update the service state to Running.  
+
+            //update server to running
             serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
         }
 
         protected override void OnStop()
         {
-            // Update the service state to Start Pending.  
+            //logging the stopping request
+            eventLog1.WriteEntry("In onStop.");
+
+            //stop pending of sever
             ServiceStatus serviceStatus = new ServiceStatus();
             serviceStatus.dwCurrentState = ServiceState.SERVICE_STOP_PENDING;
             serviceStatus.dwWaitHint = 100000;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-            eventLog1.WriteEntry("In onStop.");
-            // Update the service state to Running.  
+
+            //close the server
+            this.m_imageServer.ServerClosing();
+
+            //update service status to stopped
             serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
         }
 
+        
         public void OnTimer(object sender, System.Timers.ElapsedEventArgs args)
-        {
-            // TODO: Insert monitoring activities here.  
+        { 
             eventLog1.WriteEntry("Monitoring the System", EventLogEntryType.Information, eventId++);
-        }
+        } 
 
+        /// <summary>
+        /// Logging service resume
+        /// </summary>
         protected override void OnContinue()
         {
             eventLog1.WriteEntry("In OnContinue.");
-        }
+        } 
 
-        /// <summary>
-        /// Write to log
-        /// </summary>
-        /// <param name="sender">The sender</param>
-        /// <param name="msg">The message</param>
+       /// <summary>
+       /// 
+       /// </summary>
+       /// <param name="sender"></param>
+       /// <param name="m"></param>
         public void SendMessage(Object sender, MessageRecievedEventArgs m)
         {
+            //****************************************************
+            //THIS PART HAS TO BE CHANGED
+            //****************************************************
             eventLog1.WriteEntry(m.Message, EnumToLog(m.Status));
         }
         
-        /// <summary>
-        /// Convert from enum type to log entry type
-        /// </summary>
-        /// <param name="status">The status of the message</param>
-        /// <returns></returns>
+       /// <summary>
+       /// 
+       /// </summary>
+       /// <param name="status"></param>
+       /// <returns></returns>
         private EventLogEntryType EnumToLog(MessageTypeEnum status)
         {
+            //****************************************************
+            //THIS PART HAS TO BE CHANGED
+            //****************************************************
             switch (status)
             {
                 case MessageTypeEnum.FAIL:
