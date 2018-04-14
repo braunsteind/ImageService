@@ -63,7 +63,7 @@ namespace ImageService.Server
             IDirectoryHandler handler = new DirectoyHandler(m_logging, m_controller, path);
             CommandRecieved += handler.OnCommandRecieved;
             //register the handler to CloseServer event
-            this.CloseServer += handler.OnCloseHandler;
+            this.CloseServer += handler.CloseHandler;
             handler.StartHandleDirectory(path);
             this.m_logging.Log("Handler was created for directory: " + path, Logging.Modal.MessageTypeEnum.INFO);
         }

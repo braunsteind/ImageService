@@ -19,6 +19,6 @@ namespace ImageService.Controller.Handlers
         /*****************************************************************************************/
         /*****************************************************************************************/
         /*****************************************************************************************/
-        void OnCloseHandler(object sender, DirectoryCloseEventArgs e);
+        void CloseHandler(object sender, DirectoryCloseEventArgs e);
     }
 }
