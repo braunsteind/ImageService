@@ -73,7 +73,6 @@ namespace ImageService.Controller.Handlers
         {
             this.m_path = dirPath;
             this.m_dirWatcher = new FileSystemWatcher(this.m_path);
-            m_logging.Log("enter StartHandleDirectory" + " " + dirPath, MessageTypeEnum.INFO);
 
             this.m_dirWatcher.NotifyFilter = NotifyFilters.FileName;
             string[] filesInDirectory = Directory.GetFiles(m_path);
