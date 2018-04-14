@@ -12,20 +12,32 @@ namespace ImageService.Controller
 {
     public class ImageController : IImageController
     {
-        private IImageServiceModal m_modal;                      // The Modal Object
-        private Dictionary<int, ICommand> commands;
 
+        private IImageServiceModal m_modal;                      // The Modal Object
+        private Dictionary<int, ICommand> commands;              //num-command dictionary
+
+        /// <summary>
+        /// ImangeController constuctor
+        /// </summary>
+        /// <param name="modal"></param>
         public ImageController(IImageServiceModal modal)
         {
-            //Storing the Modal Of The System
-            m_modal = modal;
-            commands = new Dictionary<int, ICommand>();
+            m_modal = modal;        //Storing the Modal Of The System
+            commands = new Dictionary<int, ICommand>();         //creating the dictionary
 
             //For Now will contain NEW_FILE_COMMAND
             this.commands[((int)CommandEnum.NewFileCommand)] = new NewFileCommand(this.m_modal);
 
         }
 
+        /// <summary>
+        /// Executing command.
+        /// Returns whether or not command succeeded
+        /// </summary>
+        /// <param name="commandID"></param>
+        /// <param name="args"></param>
+        /// <param name="resultSuccesful"></param>
+        /// <returns></returns>
         public string ExecuteCommand(int commandID, string[] args, out bool resultSuccesful)
         {
             bool temp;
