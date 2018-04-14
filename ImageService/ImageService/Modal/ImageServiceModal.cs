@@ -16,8 +16,10 @@ namespace ImageService.Modal
     {
         #region Members
 
-        private string m_OutputFolder;            // The Output Folder
-        private int m_thumbnailSize;              // The Size Of The Thumbnail Size
+        //The Output Folder
+        private string m_OutputFolder;
+        //The Size Of The Thumbnail Size
+        private int m_thumbnailSize;
 
         public ImageServiceModal(string m_OutputFolder, int m_thumbnailSize)
         {
@@ -34,8 +36,15 @@ namespace ImageService.Modal
             if (File.Exists(path))
             {
                 //create the out folder
-                CreateDir(path, out copyPath, out copyThumb);
-
+                try
+                {
+                    CreateDir(path, out copyPath, out copyThumb);
+                }
+                catch (Exception e)
+                {
+                    result = false;
+                    return "Failed creating directory. error: " + e.Message;
+                }
                 //get the image from the path
                 Image img = Image.FromFile(path);
                 //get the thumbnail
@@ -44,7 +53,7 @@ namespace ImageService.Modal
                 //save the thumbnail
                 thumb.Save(Path.ChangeExtension(copyThumb, "thumb"));
                 //save the image in the copy path
-              
+
                 img.Dispose();
                 File.Delete(path);
 
