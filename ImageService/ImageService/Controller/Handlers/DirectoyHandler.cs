@@ -15,9 +15,7 @@ using ImageService.Server;
 namespace ImageService.Controller.Handlers
 {
    
-    /// <summary>
-    /// 
-    /// </summary>
+
     public class DirectoyHandler : IDirectoryHandler
     {
         #region Members
@@ -32,22 +30,17 @@ namespace ImageService.Controller.Handlers
         public event EventHandler<DirectoryCloseEventArgs> DirectoryClose;    // The Event That Notifies that the Directory is being closed
 
         /// <summary>
-        /// 
+        /// Constructor
         /// </summary>
-        /// <param name="logging"></param>
-        /// <param name="controller"></param>
-        /// <param name="path"></param>
+        /// <param name="logging">The logging</param>
+        /// <param name="controller">The controller</param>
         public DirectoyHandler(ILoggingService logging, IImageController controller)
         {
             this.m_logging = logging;
             this.m_controller = controller;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+
         public void OnCommandRecieved(object sender, CommandRecievedEventArgs e)
         {
             bool result;
@@ -65,10 +58,7 @@ namespace ImageService.Controller.Handlers
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dirPath"></param>
+
         public void StartHandleDirectory(string dirPath)
         {
             this.m_path = dirPath;
@@ -84,11 +74,13 @@ namespace ImageService.Controller.Handlers
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /*************************************************************************************/
+        /*************************************************************************************/
+        /*************************************************************************************/
+        /*************************************************************************************/
+        /*************************************************************************************/
+        /*************************************************************************************/
+        /*************************************************************************************/
         private void M_dirWatcher_Created(object sender, FileSystemEventArgs e)
         {
             this.m_logging.Log("Enterd M_durWatcher_Created with: " + e.FullPath, MessageTypeEnum.INFO);
