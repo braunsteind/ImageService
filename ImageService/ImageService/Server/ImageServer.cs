@@ -43,14 +43,24 @@ namespace ImageService.Server
         /// </summary>
         private void ExtractHandlersFromConfig()
         {
+
             //extract folders from App.config
             string[] foldersToListen = (ConfigurationManager.AppSettings.Get("Handler").Split(';'));
             //loop on all folders
             foreach (string directory in foldersToListen)
             {
+                try
+                {
                     //create handler for every directory
                     this.CreateHandler(directory);
+                } catch (Exception e)
+                {
+                    //logging a problem with creating handler, if needed
+                    string error = "Error creating handler to: " + directory + ". Details:" + e.ToString();
+                    this.m_logging.Log(error, Logging.Modal.MessageTypeEnum.FAIL);
+                }
             }
+
         }
 
         /// <summary>
