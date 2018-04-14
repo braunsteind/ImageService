@@ -10,15 +10,15 @@ namespace ImageService.Logging
     public class LoggingService : ILoggingService
     {
         /// <summary>
-        /// Taking care of message event
+        /// Event handling
         /// </summary>
         public event EventHandler<MessageRecievedEventArgs> MessageRecieved;
 
         /// <summary>
-        /// Logging the message
+        /// Logging function. logging a message
         /// </summary>
-        /// <param name="message">The message to log</param>
-        /// <param name="type">The type of message</param>
+        /// <param name="message"> the message to log </param>
+        /// <param name="type"> the type of message to log</param>
         public void Log(string message, MessageTypeEnum type)
         {
             MessageRecieved.Invoke(this, new MessageRecievedEventArgs(type, message));
