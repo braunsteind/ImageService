@@ -36,6 +36,7 @@ namespace ImageService.Modal
         {
             string copyPath;
             string copyThumb;
+            int count = 1;
 
             //adding this feature to support instant download of images directly to the folder
             System.Threading.Thread.Sleep(500);
@@ -61,10 +62,12 @@ namespace ImageService.Modal
                 Image img = Image.FromFile(path);
                 //get the thumbnail
                 Image thumb = img.GetThumbnailImage(this.m_thumbnailSize, this.m_thumbnailSize, () => false, IntPtr.Zero);
+
                 //save the image in the copy path
                 img.Save(copyPath);
                 //save the thumbnail
                 thumb.Save(Path.ChangeExtension(copyThumb, "thumb"));
+
                 //dispose
                 img.Dispose();
                 File.Delete(path);
@@ -88,6 +91,9 @@ namespace ImageService.Modal
         /// <param name="copyPath">The copy picture path</param>
         private void CreateDir(string path, out string copyPath, out string copyThumb)
         {
+            int count = 1;
+            string temp;
+
             //if output folder doesn't exist, create it as hiden folder
             DirectoryInfo di = Directory.CreateDirectory(this.m_OutputFolder);
             di.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
@@ -107,6 +113,20 @@ namespace ImageService.Modal
 
             //get the picture name
             string imageName = path.Substring(path.LastIndexOf("\\"));
+
+            //*********************** IF ALREADY EXISTS ******************************
+            if (File.Exists(copyPath))
+            {
+                string name = Path.GetFileNameWithoutExtension(path);
+                string ext = Path.GetExtension(path);
+                while (File.Exists((temp = copyPath + name + " ( " + count.ToString() + " )" + ext)))
+                {
+                    count++;
+                }
+                //imageName += " (" + count.ToString() + ") " + ext;
+                imageName = temp;
+            }
+            //**************************************************************************
 
             //add the picture name to the copy
             copyPath += imageName;
