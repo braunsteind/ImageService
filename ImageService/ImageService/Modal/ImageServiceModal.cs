@@ -15,12 +15,11 @@ namespace ImageService.Modal
     public class ImageServiceModal : IImageServiceModal
     {
         #region Members
-
         //The Output Folder
         private string m_OutputFolder;
         //The Size Of The Thumbnail Size
         private int m_thumbnailSize;
-
+        #endregion
         /// <summary>
         /// Constructor
         /// </summary>
@@ -36,7 +35,6 @@ namespace ImageService.Modal
         {
             string copyPath;
             string copyThumb;
-            int count = 1;
 
             //adding this feature to support instant download of images directly to the folder
             System.Threading.Thread.Sleep(500);
@@ -57,7 +55,7 @@ namespace ImageService.Modal
                     //return fail message
                     return "Failed creating directory. error: " + e.Message;
                 }
-                
+
                 //get the image from the path
                 Image img = Image.FromFile(path);
                 //get the thumbnail
@@ -91,9 +89,6 @@ namespace ImageService.Modal
         /// <param name="copyPath">The copy picture path</param>
         private void CreateDir(string path, out string copyPath, out string copyThumb)
         {
-            int count = 1;
-            string temp;
-
             //if output folder doesn't exist, create it as hiden folder
             DirectoryInfo di = Directory.CreateDirectory(this.m_OutputFolder);
             di.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
@@ -113,25 +108,30 @@ namespace ImageService.Modal
 
             //get the picture name
             string imageName = path.Substring(path.LastIndexOf("\\"));
-
-            //*********************** IF ALREADY EXISTS ******************************
-            if (File.Exists(copyPath))
-            {
-                string name = Path.GetFileNameWithoutExtension(path);
-                string ext = Path.GetExtension(path);
-                while (File.Exists((temp = copyPath + name + " ( " + count.ToString() + " )" + ext)))
-                {
-                    count++;
-                }
-                //imageName += " (" + count.ToString() + ") " + ext;
-                imageName = temp;
-            }
-            //**************************************************************************
-
             //add the picture name to the copy
             copyPath += imageName;
             copyThumb += imageName;
+
+            //if the picture name already taken
+            if (File.Exists(copyPath))
+            {
+                //the index to add to the image
+                int i = 1;
+                //the picture type
+                string type = copyPath.Substring(copyPath.LastIndexOf("."));
+                //temp name of the image
+                string tempName = copyPath.Substring(0, copyPath.Length - type.Length);
+                //while name taken - add index by 1
+                while (File.Exists(tempName + "(" + i.ToString() + ")" + type))
+                {
+                    i++;
+                }
+                //change the image name in the path
+                copyPath = copyPath.Substring(0, copyPath.Length - type.Length)
+                    + "(" + i.ToString() + ")" + type;
+                copyThumb = copyThumb.Substring(0, copyThumb.Length - type.Length)
+                    + "(" + i.ToString() + ")" + type;
+            }
         }
-        #endregion
     }
 }
