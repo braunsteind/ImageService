@@ -37,7 +37,10 @@ namespace ImageService.Modal
             string copyPath;
             string copyThumb;
 
-            //check the path exists
+            //adding this feature to support instant download of images directly to the folder
+            System.Threading.Thread.Sleep(500);
+
+            //check if the path exists
             if (File.Exists(path))
             {
                 //try to create the out folder
@@ -53,6 +56,7 @@ namespace ImageService.Modal
                     //return fail message
                     return "Failed creating directory. error: " + e.Message;
                 }
+                
                 //get the image from the path
                 Image img = Image.FromFile(path);
                 //get the thumbnail
