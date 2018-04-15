@@ -74,47 +74,43 @@ namespace ImageService.Controller.Handlers
 
             //set notify filter to file name
             this.m_dirWatcher.NotifyFilter = NotifyFilters.FileName;
-            this.m_dirWatcher.Created += new FileSystemEventHandler(M_dirWatcher_Created);
-            this.m_dirWatcher.Changed += new FileSystemEventHandler(M_dirWatcher_Created);
+            this.m_dirWatcher.Created += new FileSystemEventHandler(WakeDirWatcher);
+            this.m_dirWatcher.Changed += new FileSystemEventHandler(WakeDirWatcher);
             this.m_dirWatcher.EnableRaisingEvents = true;
             this.m_logging.Log("Start handle directory: " + dirPath, MessageTypeEnum.INFO);
         }
 
-        /*************************************************************************************/
-        /*************************************************************************************/
-        /*************************************************************************************/
-        /*************************************************************************************/
-        /*************************************************************************************/
-        /*************************************************************************************/
-        /*************************************************************************************/
-        private void M_dirWatcher_Created(object sender, FileSystemEventArgs e)
+        private void WakeDirWatcher(object sender, FileSystemEventArgs e)
         {
-            this.m_logging.Log("Entered M_durWatcher_Created with: " + e.FullPath, MessageTypeEnum.INFO);
+            this.m_logging.Log("DirWatcher is up. path: " + e.FullPath, MessageTypeEnum.INFO);
+            //get file extension
             string extension = Path.GetExtension(e.FullPath);
-
+            //check that the file extension is relevant
             if (this.relevantFiles.Contains(extension))
             {
+                //get the file path
                 string[] args = { e.FullPath };
+                //create command args
                 CommandRecievedEventArgs commandRecievedEventArgs =
                     new CommandRecievedEventArgs((int)CommandEnum.NewFileCommand, args, "");
+                //start command
                 this.OnCommandRecieved(this, commandRecievedEventArgs);
             }
-
-
         }
 
-        public void CloseHandler(object sender, DirectoryCloseEventArgs e)
+        public void StopHandler(object sender, DirectoryCloseEventArgs e)
         {
             try
             {
-
+                //stop handler
                 this.m_dirWatcher.EnableRaisingEvents = false;
-
                 ((ImageServer)sender).CommandRecieved -= this.OnCommandRecieved;
+                //write to log
                 this.m_logging.Log("Succsess on closing handler of path " + this.m_path, MessageTypeEnum.INFO);
             }
             catch (Exception exception)
             {
+                //write fail to log
                 this.m_logging.Log("Error while trying to close handler of path " + this.m_path + " "
                     + exception.ToString(), MessageTypeEnum.FAIL);
             }

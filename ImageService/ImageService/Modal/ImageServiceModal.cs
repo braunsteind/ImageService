@@ -21,6 +21,11 @@ namespace ImageService.Modal
         //The Size Of The Thumbnail Size
         private int m_thumbnailSize;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="m_OutputFolder">The output folder</param>
+        /// <param name="m_thumbnailSize">The thumbnail size</param>
         public ImageServiceModal(string m_OutputFolder, int m_thumbnailSize)
         {
             this.m_OutputFolder = m_OutputFolder;
@@ -35,34 +40,39 @@ namespace ImageService.Modal
             //check the path exists
             if (File.Exists(path))
             {
-                //create the out folder
+                //try to create the out folder
                 try
                 {
                     CreateDir(path, out copyPath, out copyThumb);
                 }
+                //if failed
                 catch (Exception e)
                 {
+                    //set result to false
                     result = false;
+                    //return fail message
                     return "Failed creating directory. error: " + e.Message;
                 }
                 //get the image from the path
                 Image img = Image.FromFile(path);
                 //get the thumbnail
                 Image thumb = img.GetThumbnailImage(this.m_thumbnailSize, this.m_thumbnailSize, () => false, IntPtr.Zero);
+                //save the image in the copy path
                 img.Save(copyPath);
                 //save the thumbnail
                 thumb.Save(Path.ChangeExtension(copyThumb, "thumb"));
-                //save the image in the copy path
-
+                //dispose
                 img.Dispose();
                 File.Delete(path);
 
+                //check the copies worked and exists
                 if (File.Exists(copyPath) && File.Exists(Path.ChangeExtension(copyThumb, "thumb")))
                 {
                     result = true;
                     return copyPath;
                 }
             }
+            //failure
             result = false;
             return "Failed";
         }
@@ -98,8 +108,6 @@ namespace ImageService.Modal
             copyPath += imageName;
             copyThumb += imageName;
         }
-
         #endregion
-
     }
 }

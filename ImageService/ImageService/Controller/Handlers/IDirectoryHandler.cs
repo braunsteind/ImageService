@@ -19,6 +19,6 @@ namespace ImageService.Controller.Handlers
         void OnCommandRecieved(object sender, CommandRecievedEventArgs e);
 
         //Closing an handler
-        void CloseHandler(object sender, DirectoryCloseEventArgs e);
+        void StopHandler(object sender, DirectoryCloseEventArgs e);
     }
 }

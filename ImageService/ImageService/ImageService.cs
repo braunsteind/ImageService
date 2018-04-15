@@ -50,7 +50,8 @@ namespace ImageService
         [DllImport("advapi32.dll", SetLastError = true)]
         private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
 
-        private ImageServer m_imageServer;          // The Image Server
+        //The Image Server
+        private ImageServer m_imageServer;
         private IImageServiceModal modal;
         private IImageController controller;
         private ILoggingService logging;
@@ -65,7 +66,7 @@ namespace ImageService
             eventLog1.Source = "ImageServiceSource";
             eventLog1.Log = "ImageServiceLog";
             this.logging = new LoggingService();
-            this.logging.MessageRecieved += SendMessage;
+            this.logging.MessageRecieved += WriteToEntry;
         }
 
         /// <summary>
@@ -87,14 +88,14 @@ namespace ImageService
             string backupFolder = ConfigurationManager.AppSettings.Get("OutputDir");
             int sizeOfThumbnail = Int32.Parse(ConfigurationManager.AppSettings.Get("ThumbnailSize"));
 
-            
+
             //creating the modal
             this.modal = new ImageServiceModal(backupFolder, sizeOfThumbnail);
             //creating controller
             this.controller = new ImageController(this.modal);
             //creating the server, using the modal and controller
-            this.m_imageServer = new ImageServer(this.controller, this.logging);   
-            
+            this.m_imageServer = new ImageServer(this.controller, this.logging);
+
             // Set up a timer to trigger every minute.  
             System.Timers.Timer timer = new System.Timers.Timer();
             timer.Interval = 60000; // 60 seconds  
@@ -125,11 +126,11 @@ namespace ImageService
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
         }
 
-        
+
         public void OnTimer(object sender, System.Timers.ElapsedEventArgs args)
-        { 
+        {
             eventLog1.WriteEntry("Monitoring the System", EventLogEntryType.Information, eventId++);
-        } 
+        }
 
         /// <summary>
         /// Logging service resume
@@ -137,40 +138,33 @@ namespace ImageService
         protected override void OnContinue()
         {
             eventLog1.WriteEntry("In OnContinue.");
-        } 
-
-       /// <summary>
-       /// 
-       /// </summary>
-       /// <param name="sender"></param>
-       /// <param name="m"></param>
-        public void SendMessage(Object sender, MessageRecievedEventArgs m)
-        {
-            //****************************************************
-            //THIS PART HAS TO BE CHANGED
-            //****************************************************
-            eventLog1.WriteEntry(m.Message, EnumToLog(m.Status));
         }
-        
-       /// <summary>
-       /// 
-       /// </summary>
-       /// <param name="status"></param>
-       /// <returns></returns>
-        private EventLogEntryType EnumToLog(MessageTypeEnum status)
+
+        /// <summary>
+        /// Write message to entry
+        /// </summary>
+        /// <param name="sender">The sender of the message</param>
+        /// <param name="m">The message args</param>
+        public void WriteToEntry(Object sender, MessageRecievedEventArgs m)
         {
-            //****************************************************
-            //THIS PART HAS TO BE CHANGED
-            //****************************************************
+            eventLog1.WriteEntry(m.Message, StatusConverter(m.Status));
+        }
+
+        /// <summary>
+        /// Convert status to event log
+        /// </summary>
+        /// <param name="status">The message status</param>
+        /// <returns></returns>
+        private EventLogEntryType StatusConverter(MessageTypeEnum status)
+        {
             switch (status)
             {
-                case MessageTypeEnum.FAIL:
-                    return EventLogEntryType.Error;
+                case MessageTypeEnum.INFO:
+                    return EventLogEntryType.Information;
                 case MessageTypeEnum.WARNING:
                     return EventLogEntryType.Warning;
-                case MessageTypeEnum.INFO:
                 default:
-                    return EventLogEntryType.Information;
+                    return EventLogEntryType.Error;
             }
         }
     }
