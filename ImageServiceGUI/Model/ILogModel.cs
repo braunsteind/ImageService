@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImageServiceGUI.Model
 {
-    class SettingsModel : ISettingsModel
+    class ILogModel
     {
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImageServiceGUI.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace ImageServiceGUI.ViewModel
 {
     class SettingsViewModel
     {
+        private ISettingsModel settingsModel;
     }
 }

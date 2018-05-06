@@ -3,16 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ImageServiceGUI"
+        xmlns:local="clr-namespace:ImageServiceGUI.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
         <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="321" VerticalAlignment="Top" Width="518" Margin="0,0,0,-0.2">
             <TabItem Header="Settings">
-                <Grid Background="#FFE5E5E5"/>
+                <local:SettingsView/>
             </TabItem>
             <TabItem Header="Logs">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE535E7"/>
             </TabItem>
         </TabControl>
     </Grid>
