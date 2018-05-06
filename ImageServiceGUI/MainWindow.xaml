@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageServiceGUI.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" MinHeight="400" MinWidth="400" SizeToContent="WidthAndHeight">
     <Grid>
-        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="321" VerticalAlignment="Top" Width="518" Margin="0,0,0,-0.2">
+        <TabControl x:Name="tabControl" Height="Auto" Width="Auto">
             <TabItem Header="Settings">
                 <local:SettingsView/>
             </TabItem>

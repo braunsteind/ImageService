@@ -7,8 +7,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
-        <Label Content="Settings" FontSize="25" HorizontalAlignment="Center" FontWeight="Bold" Foreground="Blue" RenderTransformOrigin="2.634,0.921"/>
-        <Grid TextBlock.FontSize="14">
+        <Label Content="Settings" Foreground="Blue" FontWeight="Bold" FontSize="30" HorizontalAlignment="Center"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -16,13 +20,16 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock> Output Directory:</TextBlock>
+            <Label FontWeight="Bold">OutPut Directory:</Label>
+            <TextBlock Grid.Column="2" Text="{Binding VM_OutputDirectory}"></TextBlock>
+            <Label Grid.Row="1" FontWeight="Bold">Source Name:</Label>
+            <TextBlock Grid.Column="2" Text="{Binding VM_SourceName}"></TextBlock>
+            <Label Grid.Row="2" FontWeight="Bold">Log Name:</Label>
+            <TextBlock Grid.Column="2" Text="{Binding VM_LogName}"></TextBlock>
+            <Label Grid.Row="3" FontWeight="Bold">Thumnail Size:</Label>
+            <TextBlock Grid.Column="2" Text="{Binding VM_ThumbnailSize}"></TextBlock>
+            <Button Grid.Row="4" Grid.ColumnSpan="2" Grid.RowSpan="3" Command="{Binding RemoveCommand}">Remove</Button>
         </Grid>
     </StackPanel>
 </UserControl>
