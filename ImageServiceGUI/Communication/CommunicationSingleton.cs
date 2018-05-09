@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
-using System.Configuration;
 using System.IO;
+using Newtonsoft.Json;
+using ImageService.Infrastructure.Enums;
+using Newtonsoft.Json.Linq;
 
 namespace ImageServiceGUI.Communication
 {
@@ -16,8 +15,20 @@ namespace ImageServiceGUI.Communication
         NetworkStream stream;
         BinaryReader reader;
         BinaryWriter writer;
-
         private static CommunicationSingleton instance;
+        public event EventHandler<CommandEventArgs> InMessage;
+        private bool isConnected;
+        public bool IsConnected
+        {
+            get { return isConnected; }
+            set { isConnected = value; }
+        }
+
+        // private constructor
+        private CommunicationSingleton()
+        {
+            IsConnected = false;
+        }
 
         public static CommunicationSingleton Instance
         {
@@ -31,32 +42,87 @@ namespace ImageServiceGUI.Communication
             }
         }
 
-        // private constructor
-        private CommunicationSingleton()
+        public void Connect(string ip, int port)
         {
-            
+            // try to connect
+            try
+            {
+                IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8000);
+                client = new TcpClient();
+                client.Connect(ep);
+                stream = client.GetStream();
+                reader = new BinaryReader(stream);
+                writer = new BinaryWriter(stream);
+                IsConnected = true;
+                StartReading();
+            }
+            // if error occurred
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
-        public void connect(string ip, int port)
+        public void Write(string command)
         {
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8000);
-            client = new TcpClient();
-            client.Connect(ep);
+            // check connection
+            if (IsConnected)
+            {
+                try
+                {
+                    // write command to server
+                    writer.Write(command);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
         }
 
-        public void write(string command)
+        public void StartReading()
         {
-            throw new NotImplementedException();
+            new Task(() =>
+            {
+                // while connected
+                while (IsConnected)
+                {
+                    try
+                    {
+                        // read from server
+                        string temp = reader.ReadString();
+                        JObject msgObj = JObject.Parse(temp);
+                        // create command event args
+                        CommandEventArgs msg = new CommandEventArgs();
+                        msg.Command = (CommandEnum)msgObj["Command"];
+                        msg.Args = (string)msgObj["Args"];
+                        // if close command
+                        if (msg.Command == CommandEnum.CloseCommand)
+                        {
+                            // disconnect
+                            Disconnect();
+                            return;
+                        }
+                        // invoke incoming message event
+                        this.InMessage?.Invoke(this, msg);
+                    }
+                    // if failed
+                    catch (Exception e)
+                    {
+                        // write message
+                        Console.WriteLine(e.Message);
+                        break;
+                    }
+                }
+            }).Start();
         }
 
-        public string read()
+        public void Disconnect()
         {
-            throw new NotImplementedException();
-        }
-
-        public void disconnect()
-        {
+            // close the connection
             client.Close();
+            // change IsConnected to false
+            IsConnected = false;
         }
     }
 }

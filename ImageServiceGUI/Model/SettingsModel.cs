@@ -1,15 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ImageServiceGUI.Communication;
+using ImageService.Infrastructure.Enums;
+using Newtonsoft.Json;
+using static System.Net.Mime.MediaTypeNames;
+using System.Threading.Tasks;
 
 namespace ImageServiceGUI.Model
 {
     class SettingsModel : ISettingsModel
     {
+        public ICommunicationSingleton communication;
+
+        public SettingsModel()
+        {
+            communication = CommunicationSingleton.Instance;
+            communication.InMessage += IncomingMessage;
+        }
+
+        private void IncomingMessage(object sender, CommandEventArgs e)
+        {
+            if (e.Command == CommandEnum.GetConfigCommand)
+            {
+                try
+                {
+                    Console.WriteLine(e.Args);
+                    SettingsArgs settingsArgs = JsonConvert.DeserializeObject<SettingsArgs>(e.Args);
+                    
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
         private string logName;
         public string LogName
         {
@@ -62,8 +87,6 @@ namespace ImageServiceGUI.Model
                 }
             }
         }
-
-        public ICommunicationSingleton communication { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
