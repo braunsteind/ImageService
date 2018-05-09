@@ -12,7 +12,7 @@
                 <local:SettingsView/>
             </TabItem>
             <TabItem Header="Logs">
-                <Grid Background="#FFE535E7"/>
+                <Grid Background="Black"/>
             </TabItem>
         </TabControl>
     </Grid>

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ImageServiceGUI.Communication;
 
 namespace ImageServiceGUI.Model
 {
@@ -62,6 +63,7 @@ namespace ImageServiceGUI.Model
             }
         }
 
+        public ICommunicationSingleton communication { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
