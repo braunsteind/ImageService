@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImageService.Logging
 {
-    class LogItem
+    public class LogItem
     {
         private MessageTypeEnum enumType;
         private string message;

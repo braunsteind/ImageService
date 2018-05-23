@@ -42,5 +42,4 @@ namespace ImageService.ImageService.Commends
             }
         }
     }
-    }
 }

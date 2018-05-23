@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImageService\Commends\CloseHandlerCommand.cs" />
     <Compile Include="Infrastructure\Enums\CommandEnum.cs" />
     <Compile Include="Logging\LogItem.cs" />
     <Compile Include="ImageService\Commends\GetConfigCommand.cs" />
