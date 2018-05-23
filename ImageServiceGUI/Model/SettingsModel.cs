@@ -25,9 +25,18 @@ namespace ImageServiceGUI.Model
             {
                 try
                 {
-                    Console.WriteLine(e.Args);
-                    SettingsArgs settingsArgs = JsonConvert.DeserializeObject<SettingsArgs>(e.Args);
-                    
+                    if (responseObj != null)
+                    {
+                        switch (responseObj.CommandID)
+                        {
+                            case (int)CommandEnum.GetConfigCommand:
+                                UpdateConfigurations(responseObj);
+                                break;
+                            case (int)CommandEnum.CloseHandler:
+                                CloseHandler(responseObj);
+                                break;
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {

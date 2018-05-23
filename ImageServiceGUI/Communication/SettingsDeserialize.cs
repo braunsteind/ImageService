@@ -11,7 +11,7 @@ namespace ImageServiceGUI.Communication
         public string OutputDir { get; set; }
         public string SourceName { get; set; }
         public string LogName { get; set; }
-        public int ThumbnailSize { get; set; }
+        public string ThumbnailSize { get; set; }
         public List<string> Handlers { get; set; }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace ImageServiceGUI.Communication
         /// <param name="logName"></param>
         /// <param name="thumbnailSize"></param>
         /// <param name="handlers"></param>
-        public SettingsDeserialize(string outputDir, string sourceName, string logName, int thumbnailSize, List<string> handlers)
+        public SettingsDeserialize(string outputDir, string sourceName, string logName, string thumbnailSize, List<string> handlers)
         {
             this.OutputDir = outputDir;
             this.SourceName = sourceName;
