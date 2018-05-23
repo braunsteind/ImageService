@@ -30,6 +30,7 @@
             <Label Grid.Row="3" FontWeight="Bold">Thumnail Size:</Label>
             <TextBlock Grid.Column="2" Text="{Binding VM_ThumbnailSize}"></TextBlock>
             <Button Grid.Row="4" Grid.ColumnSpan="2" Grid.RowSpan="3" Command="{Binding RemoveCommand}">Remove</Button>
+            <ListBox Name="lbHandlers" Grid.ColumnSpan="2" Grid.Row="5" ItemsSource="{Binding VM_LbHandlers}" SelectedItem="{Binding SelectedItem}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
         </Grid>
     </StackPanel>
 </UserControl>

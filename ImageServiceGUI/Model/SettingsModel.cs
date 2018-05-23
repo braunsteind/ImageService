@@ -15,10 +15,10 @@ namespace ImageServiceGUI.Model
 
         public SettingsModel()
         {
-            Handlers = new ObservableCollection<string>();
-            communication = CommunicationSingleton.Instance;
-            communication.InMessage += IncomingMessage;
-            communication.Read();
+            this.LbHandlers = new ObservableCollection<string>();
+            this.communication = CommunicationSingleton.Instance;
+            this.communication.InMessage += IncomingMessage;
+            this.communication.Read();
         }
 
         private void IncomingMessage(object sender, CommandEventArgs e)
@@ -34,7 +34,7 @@ namespace ImageServiceGUI.Model
                     this.TumbnailSize = sd.ThumbnailSize;
                     foreach (string handler in sd.Handlers)
                     {
-                        this.Handlers.Add(handler);
+                        this.LbHandlers.Add(handler);
                     }
                 }
             }
@@ -97,7 +97,7 @@ namespace ImageServiceGUI.Model
             }
         }
 
-        public ObservableCollection<string> Handlers { get; set; }
+        public ObservableCollection<string> LbHandlers { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

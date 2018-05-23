@@ -1,9 +1,5 @@
 ﻿using ImageService.Logging.Modal;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using ImageService.Modal;
 using ImageService.Infrastructure.Enums;

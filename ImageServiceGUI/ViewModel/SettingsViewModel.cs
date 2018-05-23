@@ -1,11 +1,7 @@
 ﻿using ImageServiceGUI.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImageServiceGUI.ViewModel
 {
@@ -46,9 +42,9 @@ namespace ImageServiceGUI.ViewModel
             get { return this.settingsModel.TumbnailSize; }
         }
 
-        public ObservableCollection<string> VM_Handlers
+        public ObservableCollection<string> VM_LbHandlers
         {
-            get { return this.settingsModel.Handlers; }
+            get { return this.settingsModel.LbHandlers; }
         }
     }
 }
