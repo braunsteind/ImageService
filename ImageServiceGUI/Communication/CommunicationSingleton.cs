@@ -62,20 +62,20 @@ namespace ImageServiceGUI.Communication
             }
         }
 
-        public void Write(string command)
+        public void Write(CommandEventArgs command)
         {
-            // check connection
-            if (IsConnected)
+            try
             {
-                try
-                {
-                    // write command to server
-                    writer.Write(command);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
+                //json the command
+                string json = JsonConvert.SerializeObject(command);
+                NetworkStream stream = client.GetStream();
+                BinaryWriter writer = new BinaryWriter(stream);
+                //send json
+                writer.Write(json);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
 

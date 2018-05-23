@@ -1,38 +1,18 @@
 ﻿using ImageService.Logging.Modal;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImageService.Logging
 {
     public class LogItem
     {
-        private MessageTypeEnum enumType;
-        private string message;
-        public string Type
-        {
-            get
-            {
-                return Enum.GetName(typeof(MessageTypeEnum), enumType);
-            }
+        public int Type { get; set; }
 
-            set
-            {
-                enumType = (MessageTypeEnum)Enum.Parse(typeof(MessageTypeEnum), value);
-            }
-        }
-        public string Message
+        public string Message { get; set; }
+
+        public LogItem(int type, string message)
         {
-            get
-            {
-                return message;
-            }
-            set
-            {
-                message = value;
-            }
+            this.Type = type;
+            this.Message = message;
         }
     }
 }

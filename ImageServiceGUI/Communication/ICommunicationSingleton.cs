@@ -6,7 +6,7 @@ namespace ImageServiceGUI.Communication
     {
         event EventHandler<CommandEventArgs> InMessage;
         bool IsConnected { get; set; }
-        void Write(string command);
+        void Write(CommandEventArgs command);
         void Read();
         void Disconnect();
     }
