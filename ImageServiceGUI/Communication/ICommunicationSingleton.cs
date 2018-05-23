@@ -6,8 +6,8 @@ namespace ImageServiceGUI.Communication
     {
         event EventHandler<CommandEventArgs> InMessage;
         bool IsConnected { get; set; }
-        void Connect(string ip, int port);
         void Write(string command);
+        void Read();
         void Disconnect();
     }
 }

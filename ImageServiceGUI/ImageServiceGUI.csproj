@@ -63,6 +63,7 @@
     <Compile Include="Communication\CommunicationSingleton.cs" />
     <Compile Include="Communication\ICommunicationSingleton.cs" />
     <Compile Include="Communication\SettingsArgs.cs" />
+    <Compile Include="Communication\SettingsDeserialize.cs" />
     <Compile Include="Converters\StatusToColorConverter.cs" />
     <Compile Include="Model\ILogModel.cs" />
     <Compile Include="Model\ISettingsModel.cs" />

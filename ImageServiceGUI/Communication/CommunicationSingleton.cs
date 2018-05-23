@@ -42,7 +42,7 @@ namespace ImageServiceGUI.Communication
             }
         }
 
-        public void Connect(string ip, int port)
+        private void Connect()
         {
             // try to connect
             try
@@ -54,7 +54,6 @@ namespace ImageServiceGUI.Communication
                 reader = new BinaryReader(stream);
                 writer = new BinaryWriter(stream);
                 IsConnected = true;
-                StartReading();
             }
             // if error occurred
             catch (Exception e)
@@ -80,7 +79,7 @@ namespace ImageServiceGUI.Communication
             }
         }
 
-        public void StartReading()
+        public void Read()
         {
             new Task(() =>
             {
@@ -91,13 +90,10 @@ namespace ImageServiceGUI.Communication
                     {
                         // read from server
                         string temp = reader.ReadString();
-                        JObject msgObj = JObject.Parse(temp);
                         // create command event args
-                        CommandEventArgs msg = new CommandEventArgs();
-                        msg.Command = (CommandEnum)msgObj["Command"];
-                        msg.Args = (string)msgObj["Args"];
+                        CommandEventArgs msg = JsonConvert.DeserializeObject<CommandEventArgs>(temp);
                         // if close command
-                        if (msg.Command == CommandEnum.CloseCommand)
+                        if (msg.Command == (int)CommandEnum.CloseCommand)
                         {
                             // disconnect
                             Disconnect();

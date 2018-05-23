@@ -9,12 +9,12 @@ namespace ImageServiceGUI.Communication
 {
     class CommandEventArgs : EventArgs
     {
-        public CommandEnum Command { get; set; }
+        public int Command { get; set; }
         public string Args { get; set; }
 
         public CommandEventArgs() { }
 
-        public CommandEventArgs(CommandEnum command, string args)
+        public CommandEventArgs(int command, string args)
         {
             this.Command = command;
             this.Args = args;
