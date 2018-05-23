@@ -1,6 +1,7 @@
 ﻿using ImageServiceGUI.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -32,17 +33,22 @@ namespace ImageServiceGUI.ViewModel
         {
             get { return this.settingsModel.LogName; }
         }
-        public string OutputDirectory
+        public string VM_OutputDirectory
         {
             get { return this.settingsModel.OutputDirectory; }
         }
-        public string SourceName
+        public string VM_SourceName
         {
             get { return this.settingsModel.SourceName; }
         }
-        public string TumbnailSize
+        public string VM_TumbnailSize
         {
             get { return this.settingsModel.TumbnailSize; }
+        }
+
+        public ObservableCollection<string> VM_Handlers
+        {
+            get { return this.settingsModel.Handlers; }
         }
     }
 }

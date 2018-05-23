@@ -5,6 +5,7 @@ using ImageService.Infrastructure.Enums;
 using Newtonsoft.Json;
 using static System.Net.Mime.MediaTypeNames;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace ImageServiceGUI.Model
 {
@@ -14,6 +15,7 @@ namespace ImageServiceGUI.Model
 
         public SettingsModel()
         {
+            Handlers = new ObservableCollection<string>();
             communication = CommunicationSingleton.Instance;
             communication.InMessage += IncomingMessage;
             communication.Read();
@@ -21,27 +23,24 @@ namespace ImageServiceGUI.Model
 
         private void IncomingMessage(object sender, CommandEventArgs e)
         {
-            if (e.Command == (int)CommandEnum.GetConfigCommand)
+            try
             {
-                try
+                if (e.Command == (int)CommandEnum.GetConfigCommand)
                 {
-                    if (responseObj != null)
+                    SettingsDeserialize sd = JsonConvert.DeserializeObject<SettingsDeserialize>(e.Args);
+                    this.OutputDirectory = sd.OutputDir;
+                    this.SourceName = sd.SourceName;
+                    this.LogName = sd.LogName;
+                    this.TumbnailSize = sd.ThumbnailSize;
+                    foreach (string handler in sd.Handlers)
                     {
-                        switch (responseObj.CommandID)
-                        {
-                            case (int)CommandEnum.GetConfigCommand:
-                                UpdateConfigurations(responseObj);
-                                break;
-                            case (int)CommandEnum.CloseHandler:
-                                CloseHandler(responseObj);
-                                break;
-                        }
+                        this.Handlers.Add(handler);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -97,6 +96,8 @@ namespace ImageServiceGUI.Model
                 }
             }
         }
+
+        public ObservableCollection<string> Handlers { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

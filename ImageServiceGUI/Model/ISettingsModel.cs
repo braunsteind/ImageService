@@ -1,6 +1,7 @@
 ﻿using ImageServiceGUI.Communication;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,6 @@ namespace ImageServiceGUI.Model
         string SourceName { get; set; }
         string LogName { get; set; }
         string TumbnailSize { get; set; }
+        ObservableCollection<string> Handlers { get; set; }
     }
 }
