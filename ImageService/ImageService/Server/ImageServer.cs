@@ -2,6 +2,7 @@
 using ImageService.Controller.Handlers;
 using ImageService.Infrastructure.Enums;
 using ImageService.Logging;
+using ImageService.Logging.Modal;
 using ImageService.Modal;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,23 @@ namespace ImageService.Server
         #endregion
 
         #region Properties
+        //*********START****
+        public delegate void NotifyAllClients(CommandRecievedEventArgs commandRecievedEventArgs);
+        public static event NotifyAllClients NotifyAllHandlerRemoved;
+        //*** END *****
         public event EventHandler<CommandRecievedEventArgs> CommandRecieved;          // The event that notifies about a new Command being recieved
         public event EventHandler<DirectoryCloseEventArgs> CloseServer;
         #endregion
+
+
+        //****** START ******
+        public IImageController Controller { get { return this.m_controller; } }
+        public ILoggingService Logging { get { return this.m_logging; } }
+
+
+        public Dictionary<string, IDirectoryHandler> Handlers { get; set; }
+        //***** END ********
+
 
         /// <summary>
         /// Server constuctor
@@ -33,6 +48,8 @@ namespace ImageService.Server
         {
             this.m_controller = controller;
             this.m_logging = logging;
+
+            this.Handlers = new Dictionary<string, IDirectoryHandler>();
 
             //creating handlers for each directory
             this.ExtractHandlersFromConfig();
@@ -58,7 +75,7 @@ namespace ImageService.Server
                 {
                     //logging a problem with creating handler, if needed
                     string error = "Error creating handler to: " + directory + ". Details:" + e.ToString();
-                    this.m_logging.Log(error, Logging.Modal.MessageTypeEnum.FAIL);
+                    this.m_logging.Log(error, MessageTypeEnum.FAIL);
                 }
             }
         }
@@ -71,22 +88,55 @@ namespace ImageService.Server
         {
             //creating the handler
             IDirectoryHandler handler = new DirectoyHandler(m_logging, m_controller);
+            //****************
+            Handlers[path] = handler;
+            //*****************
             CommandRecieved += handler.OnCommandRecieved;
             //register the handler to CloseServer event
             this.CloseServer += handler.StopHandler;
             handler.StartHandleDirectory(path);
-            this.m_logging.Log("Handler was created for directory: " + path, Logging.Modal.MessageTypeEnum.INFO);
+            this.m_logging.Log("Handler was created for directory: " + path, MessageTypeEnum.INFO);
         }
 
+        //************************************************************************************************
+    
+        public static void PerformSomeEvent(CommandRecievedEventArgs commandRecievedEventArgs)
+        {
+            NotifyAllHandlerRemoved.Invoke(commandRecievedEventArgs);
+        }
+
+
+
+
+
+
         /// <summary>
-        /// Dealing with server closing
+        /// CloseSpecipicHandler function.
+        /// closes specipic handler.
         /// </summary>
-        public void ServerClosing()
+        /// <param name="toBeDeletedHandler">path of to be deleted handler</param>
+        internal void CloseSpecipicHandler(string toBeDeletedHandler)
+        {
+            if (Handlers.ContainsKey(toBeDeletedHandler))
+            {
+                IDirectoryHandler handler = Handlers[toBeDeletedHandler];
+                this.CloseServer -= handler.StopHandler;
+                handler.StopHandler(this, null);
+            }
+
+        }
+        //*****************************************************************************
+
+
+    /// <summary>
+    /// Dealing with server closing
+    /// </summary>
+    public void ServerClosing()
         {
             //close server event
             CloseServer?.Invoke(this, null);
             //write to log
-            this.m_logging.Log("Closing server", Logging.Modal.MessageTypeEnum.INFO);
+            this.m_logging.Log("Closing server", MessageTypeEnum.INFO);
         }
     }
 }
