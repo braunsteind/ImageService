@@ -63,6 +63,7 @@
     <Compile Include="Communication\CommunicationSingleton.cs" />
     <Compile Include="Communication\ICommunicationSingleton.cs" />
     <Compile Include="Communication\SettingsArgs.cs" />
+    <Compile Include="Converters\StatusToColorConverter.cs" />
     <Compile Include="Model\ILogModel.cs" />
     <Compile Include="Model\ISettingsModel.cs" />
     <Compile Include="Views\SettingsView.xaml.cs">
@@ -124,9 +125,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ImageService\ImageService.csproj">
       <Project>{F2161155-C196-48CE-8000-67A230AA5130}</Project>
