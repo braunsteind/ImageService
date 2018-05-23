@@ -16,11 +16,12 @@ namespace ImageServiceGUI.Model
         {
             communication = CommunicationSingleton.Instance;
             communication.InMessage += IncomingMessage;
+            communication.Read();
         }
 
         private void IncomingMessage(object sender, CommandEventArgs e)
         {
-            if (e.Command == CommandEnum.GetConfigCommand)
+            if (e.Command == (int)CommandEnum.GetConfigCommand)
             {
                 try
                 {
