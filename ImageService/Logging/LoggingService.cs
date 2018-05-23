@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace ImageService.Logging
 {
     public class LoggingService : ILoggingService
     {
+        private ObservableCollection<LogItem> logs;
+
         /// <summary>
         /// Event handling
         /// </summary>

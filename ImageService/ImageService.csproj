@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Configuration.Install" />
@@ -49,6 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ImageService.Infrastructure\Enums\CommandEnum.cs" />
+    <Compile Include="Logging\LogItem.cs" />
+    <Compile Include="ImageService\Commends\GetConfigCommand.cs" />
+    <Compile Include="ImageService\Commends\LogCommand.cs" />
     <Compile Include="ImageService\Modal\Event\CommandRecievedEventArgs.cs" />
     <Compile Include="ImageService\Modal\Event\DirectoryCloseEventArgs.cs" />
     <Compile Include="ImageService\Controller\Handlers\DirectoyHandler.cs" />
@@ -56,7 +63,7 @@
     <Compile Include="ImageService\Controller\Handlers\IDirectoryHandler.cs" />
     <Compile Include="ImageService\Controller\IImageController.cs" />
     <Compile Include="ImageService\Modal\IImageServiceModal.cs" />
-    <Compile Include="ImageService.Logging\ILoggingService.cs" />
+    <Compile Include="Logging\ILoggingService.cs" />
     <Compile Include="ImageService\Controller\ImageController.cs" />
     <Compile Include="ImageService\Server\ImageServer.cs" />
     <Compile Include="ImageService\ImageService.cs">
@@ -66,9 +73,9 @@
       <DependentUpon>ImageService.cs</DependentUpon>
     </Compile>
     <Compile Include="ImageService\Modal\ImageServiceModal.cs" />
-    <Compile Include="ImageService.Logging\LoggingService.cs" />
-    <Compile Include="ImageService.Logging\Modal\MessageRecievedEventArgs.cs" />
-    <Compile Include="ImageService.Logging\Modal\MessageTypeEnum.cs" />
+    <Compile Include="Logging\LoggingService.cs" />
+    <Compile Include="Logging\Modal\MessageRecievedEventArgs.cs" />
+    <Compile Include="Logging\Modal\MessageTypeEnum.cs" />
     <Compile Include="ImageService\Commends\NewFileCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
@@ -81,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ImageService\App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ImageService\ImageService.resx">
