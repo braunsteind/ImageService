@@ -65,7 +65,7 @@ namespace ImageService
             eventLog1 = new System.Diagnostics.EventLog();
             eventLog1.Source = "ImageServiceSource";
             eventLog1.Log = "ImageServiceLog";
-            this.logging = new LoggingService();
+            this.logging = new LoggingService(eventLog1);
             this.logging.MessageRecieved += WriteToEntry;
         }
 
