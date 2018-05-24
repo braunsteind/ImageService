@@ -25,6 +25,38 @@ namespace ImageService.Modal
         /// </summary>
         /// <param name="m_OutputFolder">The output folder</param>
         /// <param name="m_thumbnailSize">The thumbnail size</param>
+        /// 
+
+            
+        public string OutputFolder
+        {
+            get
+            {
+                return this.m_OutputFolder;
+            }
+            set
+            {
+                this.m_OutputFolder = value;
+            }
+        }
+
+        // The Size Of The Thumbnail Size
+        public int ThumbnailSize
+        {
+            get
+            {
+                return this.m_thumbnailSize;
+            }
+            set
+            {
+                this.m_thumbnailSize = value;
+            }
+        }
+
+
+
+
+
         public ImageServiceModal(string m_OutputFolder, int m_thumbnailSize)
         {
             this.m_OutputFolder = m_OutputFolder;

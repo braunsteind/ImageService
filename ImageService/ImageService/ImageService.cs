@@ -55,18 +55,62 @@ namespace ImageService
         private IImageServiceModal modal;
         private IImageController controller;
         private ILoggingService logging;
+        private IServiceServer imageServiceSrv;
+        private List<Tuple<string, bool>> loggsMessages;
 
         /// <summary>
         /// Service constructor
         /// </summary>
         public ImageService()
         {
+            /*
             InitializeComponent();
             eventLog1 = new System.Diagnostics.EventLog();
             eventLog1.Source = "ImageServiceSource";
             eventLog1.Log = "ImageServiceLog";
             this.logging = new LoggingService(eventLog1);
             this.logging.MessageRecieved += WriteToEntry;
+            */
+
+
+            try
+            {
+                InitializeComponent();
+                //read params from app config
+                string eventSourceName = ConfigurationManager.AppSettings.Get("SourceName");
+                string logName = ConfigurationManager.AppSettings.Get("LogName");
+                eventLog1 = new System.Diagnostics.EventLog();
+                if (!System.Diagnostics.EventLog.SourceExists(eventSourceName))
+                {
+                    System.Diagnostics.EventLog.CreateEventSource(eventSourceName, logName);
+                }
+                eventLog1.Source = eventSourceName;
+                eventLog1.Log = logName;
+                //initialize members
+                this.logging = new LoggingService(this.eventLog1);
+                this.logging.MessageRecieved += WriteMessage;
+
+                string OutputFolder = ConfigurationManager.AppSettings.Get("OutputDir");
+                int ThumbnailSize = Int32.Parse(ConfigurationManager.AppSettings.Get("ThumbnailSize"));
+
+                this.modal = new ImageServiceModal(OutputFolder, ThumbnailSize);
+
+                this.controller = new ImageController(this.modal, this.logging);
+                this.m_imageServer = new ImageServer(controller, logging);
+                this.controller.Server = m_imageServer;
+                IClientHandler ch = new ClientHandler(controller, logging);
+                imageServiceSrv = new ServiceServer(8000, logging, ch);
+                ImageServer.NotifyAllHandlerRemoved += imageServiceSrv.Update;
+                this.logging.UpdateLogEntries += imageServiceSrv.Update;
+                imageServiceSrv.Start();
+
+            }
+            catch (Exception e)
+            {
+                this.eventLog1.WriteEntry(e.ToString(), EventLogEntryType.Error);
+            }
+
+
         }
 
         /// <summary>
@@ -75,6 +119,7 @@ namespace ImageService
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
+            /*
             //start pending
             ServiceStatus serviceStatus = new ServiceStatus();
             serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
@@ -105,10 +150,36 @@ namespace ImageService
             //update server to running
             serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+            */
+
+            eventLog1.WriteEntry("In OnStart");
+            if (this.logging != null)
+            {
+                this.logging.InvokeUpdateEvent("In OnStart", MessageTypeEnum.INFO);
+            }
+            // Update the service state to Start Pending.  
+            ServiceStatus serviceStatus = new ServiceStatus();
+            serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
+            serviceStatus.dwWaitHint = 100000;
+            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+            // Set up a timer to trigger every minute.  
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Interval = 60000; // 60 seconds  
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnTimer);
+            timer.Start();
+            // Update the service state to Running.  
+            serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
+            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+            eventLog1.WriteEntry("Leave OnStart");
+            if (this.logging != null)
+            {
+                this.logging.InvokeUpdateEvent("Leave OnStart", MessageTypeEnum.INFO);
+            }
         }
 
         protected override void OnStop()
         {
+            /*
             //logging the stopping request
             eventLog1.WriteEntry("In onStop.");
 
@@ -124,6 +195,20 @@ namespace ImageService
             //update service status to stopped
             serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+            */
+
+            eventLog1.WriteEntry("In onStop.");
+            if (this.logging != null)
+            {
+                this.logging.InvokeUpdateEvent("In onStop", MessageTypeEnum.INFO);
+            }
+            this.m_imageServer.ServerClosing();
+            eventLog1.WriteEntry("Leave onStop.");
+            if (this.logging != null)
+            {
+                this.logging.InvokeUpdateEvent("Leave onStop", MessageTypeEnum.INFO);
+            }
+            this.imageServiceSrv.Stop();
         }
 
 
@@ -137,7 +222,14 @@ namespace ImageService
         /// </summary>
         protected override void OnContinue()
         {
+            /*
             eventLog1.WriteEntry("In OnContinue.");
+            */
+
+            if (this.logging != null)
+            {
+                this.logging.InvokeUpdateEvent("In OnContinue.", MessageTypeEnum.INFO);
+            }
         }
 
         /// <summary>
@@ -165,6 +257,28 @@ namespace ImageService
                     return EventLogEntryType.Warning;
                 default:
                     return EventLogEntryType.Error;
+            }
+        }
+
+
+        public void WriteMessage(Object sender, MessageRecievedEventArgs e)
+        {
+            eventLog1.WriteEntry(e.Message, GetType(e.Status));
+        }
+
+
+
+        private EventLogEntryType GetType(MessageTypeEnum status)
+        {
+            switch (status)
+            {
+                case MessageTypeEnum.FAIL:
+                    return EventLogEntryType.Error;
+                case MessageTypeEnum.WARNING:
+                    return EventLogEntryType.Warning;
+                case MessageTypeEnum.INFO:
+                default:
+                    return EventLogEntryType.Information;
             }
         }
     }

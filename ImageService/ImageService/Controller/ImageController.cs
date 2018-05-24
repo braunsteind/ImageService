@@ -25,11 +25,12 @@ namespace ImageService.Controller
         /// ImangeController constuctor
         /// </summary>
         /// <param name="modal"></param>
-        public ImageController(IImageServiceModal modal)
+        public ImageController(IImageServiceModal modal, ILoggingService loggingService)
         {
             m_modal = modal;        //Storing the Modal Of The System
+            m_loggingService = loggingService;
             commands = new Dictionary<int, ICommand>();         //creating the dictionary
-
+        
             //Adding commands to dictionary
             this.commands[((int)CommandEnum.NewFileCommand)] = new NewFileCommand(this.m_modal);
             this.commands[((int)CommandEnum.GetConfigCommand)] = new GetConfigCommand();
