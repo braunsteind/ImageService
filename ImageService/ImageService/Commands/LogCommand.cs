@@ -1,16 +1,11 @@
-﻿using ImageService.Commands;
-using ImageService.Logging;
+﻿using ImageService.Logging;
 using ImageService.Infrastructure.Enums;
 using ImageService.Modal;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ImageService.ImageService.Commends
+namespace ImageService.Commands
 {
     class LogCommand : ICommand
     {

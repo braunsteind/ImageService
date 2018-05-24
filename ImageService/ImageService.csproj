@@ -52,15 +52,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageService\Commends\CloseHandlerCommand.cs" />
+    <Compile Include="ImageService\Commands\CloseHandlerCommand.cs" />
     <Compile Include="Infrastructure\Enums\CommandEnum.cs" />
     <Compile Include="Logging\LogItem.cs" />
-    <Compile Include="ImageService\Commends\GetConfigCommand.cs" />
-    <Compile Include="ImageService\Commends\LogCommand.cs" />
+    <Compile Include="ImageService\Commands\GetConfigCommand.cs" />
+    <Compile Include="ImageService\Commands\LogCommand.cs" />
     <Compile Include="ImageService\Modal\Event\CommandRecievedEventArgs.cs" />
     <Compile Include="ImageService\Modal\Event\DirectoryCloseEventArgs.cs" />
     <Compile Include="ImageService\Controller\Handlers\DirectoyHandler.cs" />
-    <Compile Include="ImageService\Commends\ICommand.cs" />
+    <Compile Include="ImageService\Commands\ICommand.cs" />
     <Compile Include="ImageService\Controller\Handlers\IDirectoryHandler.cs" />
     <Compile Include="ImageService\Controller\IImageController.cs" />
     <Compile Include="ImageService\Modal\IImageServiceModal.cs" />
@@ -77,7 +77,7 @@
     <Compile Include="Logging\LoggingService.cs" />
     <Compile Include="Logging\Modal\MessageRecievedEventArgs.cs" />
     <Compile Include="Logging\Modal\MessageTypeEnum.cs" />
-    <Compile Include="ImageService\Commends\NewFileCommand.cs" />
+    <Compile Include="ImageService\Commands\NewFileCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
