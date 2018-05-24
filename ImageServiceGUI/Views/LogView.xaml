@@ -12,7 +12,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Type" Width="Auto" IsReadOnly="True" Binding="{Binding Path=Type}" >
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Message" Width="*" IsReadOnly="True" Binding="{Binding Message}" />
+                <DataGridTextColumn Header="Message" Width="Auto" IsReadOnly="True" Binding="{Binding Message}" />
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
