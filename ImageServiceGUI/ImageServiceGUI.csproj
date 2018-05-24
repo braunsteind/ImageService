@@ -70,6 +70,7 @@
     <Compile Include="Model\IMainWindowModel.cs" />
     <Compile Include="Model\ISettingsModel.cs" />
     <Compile Include="Model\MainWindowModel.cs" />
+    <Compile Include="ViewModel\BackgroundColor.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
