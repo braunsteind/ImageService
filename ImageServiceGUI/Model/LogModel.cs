@@ -54,7 +54,7 @@ namespace ImageServiceGUI.Model
             {
                 try
                 {
-                    LogItem logItem = new LogItem((int)args.Command, args.Args[1]);
+                    LogItem logItem = new LogItem { Type = args.Args[0], Message = args.Args[1] };
                     this.LogItems.Insert(0, logItem);
                 }
                 catch (Exception e)

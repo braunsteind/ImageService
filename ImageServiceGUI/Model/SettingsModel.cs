@@ -3,8 +3,6 @@ using System.ComponentModel;
 using ImageServiceGUI.Communication;
 using ImageService.Infrastructure.Enums;
 using Newtonsoft.Json;
-using static System.Net.Mime.MediaTypeNames;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 
 namespace ImageServiceGUI.Model
@@ -27,12 +25,12 @@ namespace ImageServiceGUI.Model
             {
                 if (e.Command == (int)CommandEnum.GetConfigCommand)
                 {
-                    SettingsDeserialize sd = JsonConvert.DeserializeObject<SettingsDeserialize>(e.Args);
-                    this.OutputDirectory = sd.OutputDir;
-                    this.SourceName = sd.SourceName;
-                    this.LogName = sd.LogName;
-                    this.TumbnailSize = sd.ThumbnailSize;
-                    foreach (string handler in sd.Handlers)
+                    this.OutputDirectory = e.Args[0];
+                    this.SourceName = e.Args[1];
+                    this.LogName = e.Args[2];
+                    this.TumbnailSize = e.Args[3];
+                    string[] handlers = e.Args[4].Split(';');
+                    foreach (string handler in handlers)
                     {
                         this.LbHandlers.Add(handler);
                     }

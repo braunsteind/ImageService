@@ -5,14 +5,19 @@ namespace ImageService.Logging
 {
     public class LogItem
     {
-        public int Type { get; set; }
-
-        public string Message { get; set; }
-
-        public LogItem(int type, string message)
+        private MessageTypeEnum enumType;
+        public string Type
         {
-            this.Type = type;
-            this.Message = message;
+            get { return Enum.GetName(typeof(MessageTypeEnum), enumType); }
+
+            set { enumType = (MessageTypeEnum)Enum.Parse(typeof(MessageTypeEnum), value); }
+        }
+
+        private string message;
+        public string Message
+        {
+            get { return message; }
+            set { message = value; }
         }
     }
 }
