@@ -1,7 +1,9 @@
 ﻿using ImageService.Commands;
 using ImageService.Infrastructure;
 using ImageService.Infrastructure.Enums;
+using ImageService.Logging;
 using ImageService.Modal;
+using ImageService.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,9 @@ namespace ImageService.Controller
 
         private IImageServiceModal m_modal;                      // The Modal Object
         private Dictionary<int, ICommand> commands;              //num-command dictionary
+        private ImageServer m_imageServer;
+        private ILoggingService m_loggingService;
+
 
         /// <summary>
         /// ImangeController constuctor
@@ -25,9 +30,10 @@ namespace ImageService.Controller
             m_modal = modal;        //Storing the Modal Of The System
             commands = new Dictionary<int, ICommand>();         //creating the dictionary
 
-            //For Now will contain NEW_FILE_COMMAND
+            //Adding commands to dictionary
             this.commands[((int)CommandEnum.NewFileCommand)] = new NewFileCommand(this.m_modal);
-
+            this.commands[((int)CommandEnum.GetConfigCommand)] = new GetConfigCommand();
+            this.commands[((int)CommandEnum.LogCommand)] = new LogCommand(this.m_loggingService);
         }
 
         /// <summary>
@@ -40,13 +46,31 @@ namespace ImageService.Controller
         /// <returns></returns>
         public string ExecuteCommand(int commandID, string[] args, out bool resultSuccesful)
         {
-            bool temp;
-            //run the command
-            string message = this.commands[commandID].Execute(args, out temp);
-            //set result
-            resultSuccesful = temp;
-            //return message
-            return message;
+            Task<Tuple<string, bool>> task = new Task<Tuple<string, bool>>(() => {
+                bool resultSuccesfulTemp;
+                string message = this.commands[commandID].Execute(args, out resultSuccesfulTemp);
+                return Tuple.Create(message, resultSuccesfulTemp);
+            });
+            task.Start();
+            task.Wait();
+            Tuple<string, bool> result = task.Result;
+            resultSuccesful = result.Item2;
+            return result.Item1;
+        }
+
+
+        public ImageServer Server
+        {
+            get
+            {
+                return m_imageServer;
+            }
+            set
+            {
+                this.m_imageServer = value;
+                this.commands[((int)CommandEnum.CloseHandler)] = new CloseHandlerCommand(m_imageServer);
+
+            }
         }
     }
 }

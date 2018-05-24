@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImageService.Server;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,6 @@ namespace ImageService.Controller
         /// <param name="result"> inidication whether or not command succeeded </param>
         /// <returns></returns>
         string ExecuteCommand(int commandID, string[] args, out bool result);          // Executing the Command Requet
+        ImageServer Server { get; set; }                                               // Server Property
     }
 }
