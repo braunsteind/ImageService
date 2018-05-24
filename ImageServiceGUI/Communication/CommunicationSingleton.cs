@@ -28,6 +28,7 @@ namespace ImageServiceGUI.Communication
         private CommunicationSingleton()
         {
             IsConnected = false;
+            Connect();
         }
 
         public static CommunicationSingleton Instance
