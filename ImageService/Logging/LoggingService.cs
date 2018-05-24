@@ -65,12 +65,12 @@ namespace ImageService.Logging
         /// <param name="type">entry type</param>
         public void InvokeUpdateEvent(string message, MessageTypeEnum type)
         {
-            LogItem newLogEnrty = new LogItem { Type = Enum.GetName(typeof(MessageTypeEnum), type), Message = message };
+            LogItem logItem = new LogItem { Type = Enum.GetName(typeof(MessageTypeEnum), type), Message = message };
             string[] args = new string[2];
 
             // args[0] = EntryType, args[1] = Message
-            args[0] = newLogEnrty.Type;
-            args[1] = newLogEnrty.Message;
+            args[0] = logItem.Type;
+            args[1] = logItem.Message;
             CommandRecievedEventArgs updateObj = new CommandRecievedEventArgs((int)CommandEnum.AddLogItem, args, null);
             if (this.UpdateLogEntries != null)
             {
