@@ -3,7 +3,6 @@ using ImageService.Infrastructure.Enums;
 using ImageServiceGUI.Communication;
 using ImageServiceGUI.Model;
 using System;
-using System.Object;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -53,6 +52,7 @@ namespace ImageServiceGUI.ViewModel
             get { return this.settingsModel.LbHandlers; }
         }
 
+        /**
         private string selectedItem;
         public string SelectedItem
         {
@@ -96,6 +96,6 @@ namespace ImageServiceGUI.ViewModel
             {
                 Console.WriteLine(e.Message);
             }
-        }
+        }**/
     }
 }

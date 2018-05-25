@@ -9,15 +9,15 @@ namespace ImageServiceGUI.Model
 {
     class SettingsModel : ISettingsModel
     {
-        public ICommunicationSingleton communication { get; set; }
+        public ICommunicationSingleton Communication { get; set; }
 
         public SettingsModel()
         {
             this.LbHandlers = new ObservableCollection<string>();
             this.LbHandlers.Add("bla bla fda fda");
-            this.communication = CommunicationSingleton.Instance;
-            this.communication.InMessage += IncomingMessage;
-            this.communication.Read();
+            this.Communication = CommunicationSingleton.Instance;
+            this.Communication.InMessage += IncomingMessage;
+            this.Communication.Read();
         }
 
         private void IncomingMessage(object sender, CommandEventArgs e)

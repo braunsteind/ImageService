@@ -6,7 +6,7 @@ namespace ImageServiceGUI.Model
 {
     interface ISettingsModel : INotifyPropertyChanged
     {
-        CommunicationSingleton communication { get; set; }
+        ICommunicationSingleton Communication { get; set; }
         string OutputDirectory { get; set; }
         string SourceName { get; set; }
         string LogName { get; set; }
