@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using ImageServiceGUI.Communication;
 using ImageService.Infrastructure.Enums;
-using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 
 namespace ImageServiceGUI.Model
@@ -14,7 +13,6 @@ namespace ImageServiceGUI.Model
         public SettingsModel()
         {
             this.LbHandlers = new ObservableCollection<string>();
-            this.LbHandlers.Add("bla bla fda fda");
             this.Communication = CommunicationSingleton.Instance;
             this.Communication.InMessage += IncomingMessage;
             this.Communication.Read();
