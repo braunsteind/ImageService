@@ -45,9 +45,9 @@ namespace ImageServiceGUI.ViewModel
         {
             get { return this.settingsModel.SourceName; }
         }
-        public string VM_TumbnailSize
+        public string VM_ThumbnailSize
         {
-            get { return this.settingsModel.TumbnailSize; }
+            get { return this.settingsModel.ThumbnailSize; }
         }
 
         public ObservableCollection<string> VM_LbHandlers

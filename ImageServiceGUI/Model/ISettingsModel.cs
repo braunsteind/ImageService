@@ -10,7 +10,7 @@ namespace ImageServiceGUI.Model
         string OutputDirectory { get; set; }
         string SourceName { get; set; }
         string LogName { get; set; }
-        string TumbnailSize { get; set; }
+        string ThumbnailSize { get; set; }
         ObservableCollection<string> LbHandlers { get; set; }
     }
 }

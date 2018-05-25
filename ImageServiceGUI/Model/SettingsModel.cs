@@ -20,7 +20,7 @@ namespace ImageServiceGUI.Model
             //this.OutputDirectory = string.Empty;
             //this.SourceName = string.Empty;
             //this.LogName = string.Empty;
-            //this.TumbnailSize = string.Empty;
+            //this.ThumbnailSize = string.Empty;
 
             this.LbHandlers = new ObservableCollection<string>();
             
@@ -38,7 +38,7 @@ namespace ImageServiceGUI.Model
                     this.OutputDirectory = e.Args[0];
                     this.SourceName = e.Args[1];
                     this.LogName = e.Args[2];
-                    this.TumbnailSize = e.Args[3];
+                    this.ThumbnailSize = e.Args[3];
                     string[] handlers = e.Args[4].Split(';');
                     foreach (string handler in handlers)
                     {
@@ -92,7 +92,7 @@ namespace ImageServiceGUI.Model
             }
         }
         private string thumbnailSize;
-        public string TumbnailSize
+        public string ThumbnailSize
         {
             get { return thumbnailSize; }
             set
