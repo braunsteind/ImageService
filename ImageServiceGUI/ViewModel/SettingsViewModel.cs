@@ -20,7 +20,7 @@ namespace ImageServiceGUI.ViewModel
             {
                 NotifyPropertyChanged("VM_" + e.PropertyName);
             };
-            this.RemoveCommand = new DelegateCommand<object>(this.OnRemove, this.CanRemove);
+            //this.RemoveCommand = new DelegateCommand<object>(this.OnRemove, this.CanRemove);
         }
 
 
