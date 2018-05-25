@@ -2,6 +2,7 @@
 using ImageService.Infrastructure.Enums;
 using ImageServiceGUI.Communication;
 using ImageServiceGUI.Model;
+using Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -51,8 +52,7 @@ namespace ImageServiceGUI.ViewModel
         {
             get { return this.settingsModel.LbHandlers; }
         }
-
-        /**
+        
         private string selectedItem;
         public string SelectedItem
         {
@@ -90,12 +90,12 @@ namespace ImageServiceGUI.ViewModel
             {
                 string[] arr = { this.selectedItem };
                 CommandEventArgs args = new CommandEventArgs((int)CommandEnum.CloseHandler, arr);
-                this.settingsModel.communication.Write(args);
+                this.settingsModel.Communication.Write(args);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-        }**/
+        }
     }
 }
