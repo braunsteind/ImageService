@@ -20,6 +20,7 @@ namespace ImageServiceGUI.ViewModel
             {
                 NotifyPropertyChanged("VM_" + e.PropertyName);
             };
+            this.RemoveCommand = new DelegateCommand<object>(this.OnRemove, this.CanRemove);
         }
 
 
@@ -73,7 +74,7 @@ namespace ImageServiceGUI.ViewModel
         /// Check if any item was selected for remove
         /// </summary>
         /// <returns>True if selected, False if not</returns>
-        private bool CanRemove()
+        private bool CanRemove(object obj)
         {
             if (this.selectedItem != null)
             {
