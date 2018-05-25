@@ -1,5 +1,6 @@
 ﻿using ImageService.Commands;
 using ImageService.Infrastructure.Enums;
+using ImageService.Modal;
 using ImageServiceGUI.Communication;
 using ImageServiceGUI.Model;
 using Prism.Commands;
@@ -92,7 +93,7 @@ namespace ImageServiceGUI.ViewModel
             try
             {
                 string[] arr = { this.selectedItem };
-                CommandEventArgs args = new CommandEventArgs((int)CommandEnum.CloseHandler, arr);
+                CommandRecievedEventArgs args = new CommandRecievedEventArgs((int)CommandEnum.CloseHandler, arr, "");
                 this.settingsModel.Communication.Write(args);
             }
             catch (Exception e)

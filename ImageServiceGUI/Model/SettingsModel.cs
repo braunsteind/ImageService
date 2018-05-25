@@ -3,6 +3,7 @@ using System.ComponentModel;
 using ImageServiceGUI.Communication;
 using ImageService.Infrastructure.Enums;
 using System.Collections.ObjectModel;
+using ImageService.Modal;
 
 namespace ImageServiceGUI.Model
 {
@@ -14,17 +15,17 @@ namespace ImageServiceGUI.Model
         {
             this.LbHandlers = new ObservableCollection<string>();
             this.LbHandlers.Add("FDA");
-            this.LbHandlers.Add("Daniel");
+            //this.LbHandlers.Add("Daniel");
             this.Communication = CommunicationSingleton.Instance;
             this.Communication.InMessage += IncomingMessage;
             this.Communication.Read();
         }
 
-        private void IncomingMessage(object sender, CommandEventArgs e)
+        private void IncomingMessage(object sender, CommandRecievedEventArgs e)
         {
             try
             {
-                if (e.Command == (int)CommandEnum.GetConfigCommand)
+                if (e.CommandID == (int)CommandEnum.GetConfigCommand)
                 {
                     this.OutputDirectory = e.Args[0];
                     this.SourceName = e.Args[1];

@@ -6,6 +6,7 @@ using System.IO;
 using Newtonsoft.Json;
 using ImageService.Infrastructure.Enums;
 using Newtonsoft.Json.Linq;
+using ImageService.Modal;
 
 namespace ImageServiceGUI.Communication
 {
@@ -16,7 +17,7 @@ namespace ImageServiceGUI.Communication
         BinaryReader reader;
         BinaryWriter writer;
         private static CommunicationSingleton instance;
-        public event EventHandler<CommandEventArgs> InMessage;
+        public event EventHandler<CommandRecievedEventArgs> InMessage;
         private bool isConnected;
         public bool IsConnected
         {
@@ -59,11 +60,12 @@ namespace ImageServiceGUI.Communication
             // if error occurred
             catch (Exception e)
             {
+                IsConnected = false;
                 Console.WriteLine(e.Message);
             }
         }
 
-        public void Write(CommandEventArgs command)
+        public void Write(CommandRecievedEventArgs command)
         {
             try
             {
@@ -92,9 +94,9 @@ namespace ImageServiceGUI.Communication
                         // read from server
                         string temp = reader.ReadString();
                         // create command event args
-                        CommandEventArgs msg = JsonConvert.DeserializeObject<CommandEventArgs>(temp);
+                        CommandRecievedEventArgs msg = JsonConvert.DeserializeObject<CommandRecievedEventArgs>(temp);
                         // if close command
-                        if (msg.Command == (int)CommandEnum.CloseCommand)
+                        if (msg.CommandID == (int)CommandEnum.CloseCommand)
                         {
                             // disconnect
                             Disconnect();

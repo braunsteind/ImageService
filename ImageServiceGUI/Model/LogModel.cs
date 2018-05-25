@@ -7,6 +7,7 @@ using ImageService.Infrastructure.Enums;
 using System.Windows;
 using Newtonsoft.Json;
 using System.Windows.Data;
+using ImageService.Modal;
 
 namespace ImageServiceGUI.Model
 {
@@ -27,15 +28,15 @@ namespace ImageServiceGUI.Model
             this.LogItems = new ObservableCollection<LogItem>();
             Object thisLock = new Object();
             BindingOperations.EnableCollectionSynchronization(LogItems, thisLock);
-            CommandEventArgs command = new CommandEventArgs((int)CommandEnum.LogCommand, null);
+            CommandRecievedEventArgs command = new CommandRecievedEventArgs((int)CommandEnum.LogCommand, null, "");
             this.Communication.Write(command);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void UpdateLogs(object sender, CommandEventArgs args)
+        private void UpdateLogs(object sender, CommandRecievedEventArgs args)
         {
-            if (args.Command == (int)CommandEnum.LogCommand)
+            if (args.CommandID == (int)CommandEnum.LogCommand)
             {
                 try
                 {
@@ -50,7 +51,7 @@ namespace ImageServiceGUI.Model
                     MessageBox.Show(e.ToString());
                 }
             }
-            else if (args.Command == (int)CommandEnum.AddLogItem)
+            else if (args.CommandID == (int)CommandEnum.AddLogItem)
             {
                 try
                 {
