@@ -1,7 +1,7 @@
-﻿<Application x:Class="ImageServiceGUI.App"
+﻿<Application x:Class="ImageServiceGui.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:ImageServiceGUI"
+             xmlns:local="clr-namespace:ImageServiceGui"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

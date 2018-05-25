@@ -52,7 +52,7 @@ namespace ImageServiceGUI.ViewModel
         {
             get { return this.settingsModel.LbHandlers; }
         }
-        
+
         private string selectedItem;
         public string SelectedItem
         {
@@ -61,7 +61,10 @@ namespace ImageServiceGUI.ViewModel
             {
                 selectedItem = value;
                 var command = this.RemoveCommand as DelegateCommand<object>;
-                command.RaiseCanExecuteChanged();
+                if (command != null)
+                {
+                    command.RaiseCanExecuteChanged();
+                }
             }
         }
 

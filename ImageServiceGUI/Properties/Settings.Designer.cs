@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ImageServiceGUI.Properties
+namespace ImageServiceGui.Properties
 {
 
 

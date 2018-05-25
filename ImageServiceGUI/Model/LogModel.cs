@@ -15,7 +15,7 @@ namespace ImageServiceGUI.Model
         public ICommunicationSingleton Communication { get; set; }
 
         public ObservableCollection<LogItem> LogItems { get; set; }
-        
+
 
         /// <summary>
         /// Constructor

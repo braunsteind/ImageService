@@ -39,7 +39,7 @@ namespace ImageServiceGUI.Converters
                     return Brushes.Transparent;
             }
         }
-    
+
 
         /// <summary>
         /// No function implementation.

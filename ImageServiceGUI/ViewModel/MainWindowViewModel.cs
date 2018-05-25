@@ -9,7 +9,7 @@ namespace ImageServiceGUI.ViewModel
     class MainWindowViewModel
     {
         private IMainWindowModel mainWindowModel;
-        
+
         public MainWindowViewModel(IMainWindowModel model)
         {
             this.mainWindowModel = model;

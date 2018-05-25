@@ -22,7 +22,7 @@ namespace ImageServiceGUI.ViewModel
         {
             get { return this.LogModel.LogItems; }
         }
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void NotifyPropertyChanged(string propName)
         {
