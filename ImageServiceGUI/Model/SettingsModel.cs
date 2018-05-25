@@ -13,10 +13,20 @@ namespace ImageServiceGUI.Model
 
         public SettingsModel()
         {
-            this.LbHandlers = new ObservableCollection<string>();
             this.Communication = CommunicationSingleton.Instance;
-            this.Communication.InMessage += IncomingMessage;
             this.Communication.Read();
+            this.Communication.InMessage += IncomingMessage;
+
+            //this.OutputDirectory = string.Empty;
+            //this.SourceName = string.Empty;
+            //this.LogName = string.Empty;
+            //this.TumbnailSize = string.Empty;
+
+            this.LbHandlers = new ObservableCollection<string>();
+            
+            string[] arr = new string[5];
+            CommandRecievedEventArgs request = new CommandRecievedEventArgs((int)CommandEnum.GetConfigCommand, arr, "");
+            this.Communication.Write(request);    
         }
 
         private void IncomingMessage(object sender, CommandRecievedEventArgs e)
@@ -101,7 +111,9 @@ namespace ImageServiceGUI.Model
 
         public void NotifyPropertyChanged(string propName)
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+            //this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
     }
 }
