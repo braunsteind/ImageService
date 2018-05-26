@@ -1,4 +1,2 @@
 Communication
 MainWindowViewModel - CloseCommand, DelegateCommand
-SettingsModel - LbHandlers might not work
-Log Xaml - element style
