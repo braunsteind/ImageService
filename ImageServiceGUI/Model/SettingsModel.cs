@@ -4,6 +4,7 @@ using ImageServiceGUI.Communication;
 using ImageService.Infrastructure.Enums;
 using System.Collections.ObjectModel;
 using ImageService.Modal;
+using System.Windows.Data;
 
 namespace ImageServiceGUI.Model
 {
@@ -23,10 +24,11 @@ namespace ImageServiceGUI.Model
             //this.ThumbnailSize = string.Empty;
 
             this.LbHandlers = new ObservableCollection<string>();
-            
+            Object thisLock = new Object();
+            BindingOperations.EnableCollectionSynchronization(LbHandlers, thisLock);
             string[] arr = new string[5];
             CommandRecievedEventArgs request = new CommandRecievedEventArgs((int)CommandEnum.GetConfigCommand, arr, "");
-            this.Communication.Write(request);    
+            this.Communication.Write(request);
         }
 
         private void IncomingMessage(object sender, CommandRecievedEventArgs e)
@@ -44,9 +46,14 @@ namespace ImageServiceGUI.Model
                     {
                         this.LbHandlers.Add(handler);
                     }
-                } else if (e.CommandID == (int)CommandEnum.CloseHandler)
+                }
+                else if (e.CommandID == (int)CommandEnum.CloseHandler)
                 {
-                    CloseHandler(e);
+                    if (LbHandlers != null && LbHandlers.Count > 0 && e != null
+                        && e.Args != null && LbHandlers.Contains(e.Args[0]))
+                    {
+                        bool result = this.LbHandlers.Remove(e.Args[0]);
+                    }
                 }
             }
             catch (Exception ex)
@@ -118,19 +125,5 @@ namespace ImageServiceGUI.Model
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
-
-
-        private void CloseHandler(CommandRecievedEventArgs responseObj)
-        {
-            if (LbHandlers != null && LbHandlers.Count > 0 && responseObj != null && responseObj.Args != null
-                                 && LbHandlers.Contains(responseObj.Args[0]))
-            {
-                this.LbHandlers.Remove(responseObj.Args[0]);
-            }
-        }
-
-
-
-
     }
 }

@@ -93,17 +93,20 @@ namespace ImageServiceGUI.Communication
                     {
                         // read from server
                         string temp = reader.ReadString();
-                        // create command event args
-                        CommandRecievedEventArgs msg = JsonConvert.DeserializeObject<CommandRecievedEventArgs>(temp);
-                        // if close command
-                        if (msg.CommandID == (int)CommandEnum.CloseCommand)
+                        if (temp != "")
                         {
-                            // disconnect
-                            Disconnect();
-                            return;
+                            // create command event args
+                            CommandRecievedEventArgs msg = JsonConvert.DeserializeObject<CommandRecievedEventArgs>(temp);
+                            // if close command
+                            if (msg.CommandID == (int)CommandEnum.CloseCommand)
+                            {
+                                // disconnect
+                                Disconnect();
+                                return;
+                            }
+                            // invoke incoming message event
+                            this.InMessage?.Invoke(this, msg);
                         }
-                        // invoke incoming message event
-                        this.InMessage?.Invoke(this, msg);
                     }
                     // if failed
                     catch (Exception e)
