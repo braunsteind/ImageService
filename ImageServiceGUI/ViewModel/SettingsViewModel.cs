@@ -20,7 +20,13 @@ namespace ImageServiceGUI.ViewModel
             {
                 NotifyPropertyChanged("VM_" + e.PropertyName);
             };
-            //this.RemoveCommand = new DelegateCommand<object>(this.OnRemove, this.CanRemove);
+            try
+            {
+                this.RemoveCommand = new DelegateCommand<object>(OnRemove, CanRemove);
+            } catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
 
@@ -83,7 +89,7 @@ namespace ImageServiceGUI.ViewModel
             return false;
         }
 
-        public ICommand RemoveCommand { get; set; }
+        public DelegateCommand<object> RemoveCommand { get; set; }
         /// <summary>
         /// OnRemove function.
         /// tells what will happen when we press Remove button.
