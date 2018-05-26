@@ -44,6 +44,9 @@ namespace ImageServiceGUI.Model
                     {
                         this.LbHandlers.Add(handler);
                     }
+                } else if (e.CommandID == (int)CommandEnum.CloseHandler)
+                {
+                    CloseHandler(e);
                 }
             }
             catch (Exception ex)
@@ -115,5 +118,19 @@ namespace ImageServiceGUI.Model
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
+
+
+        private void CloseHandler(CommandRecievedEventArgs responseObj)
+        {
+            if (LbHandlers != null && LbHandlers.Count > 0 && responseObj != null && responseObj.Args != null
+                                 && LbHandlers.Contains(responseObj.Args[0]))
+            {
+                this.LbHandlers.Remove(responseObj.Args[0]);
+            }
+        }
+
+
+
+
     }
 }
