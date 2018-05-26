@@ -44,14 +44,18 @@ namespace ImageService.Commands
                     }
                 }
                 string newHandlers = (sbNewHandlers.ToString()).TrimEnd(';');
-                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                ConfigurationManager.AppSettings.Set("Handler", newHandlers);
+
+
+                //Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 // Add an Application Setting.
-                config.AppSettings.Settings.Remove("Handler");
-                config.AppSettings.Settings.Add("Handler", newHandlers);
+                //config.AppSettings.Settings.Remove("Handler");
+                //config.AppSettings.Settings.Add("Handler", newHandlers);
                 // Save the configuration file.
-                config.Save(ConfigurationSaveMode.Modified);
+                //config.Save(ConfigurationSaveMode.Modified);
                 // Force a reload of a changed section.
-                ConfigurationManager.RefreshSection("appSettings");
+                //ConfigurationManager.RefreshSection("appSettings");
                 this.m_imageServer.CloseSpecipicHandler(toBeDeletedHandler);
                 string[] array = new string[1];
                 array[0] = toBeDeletedHandler;
