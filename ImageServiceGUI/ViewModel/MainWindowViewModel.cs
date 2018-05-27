@@ -9,7 +9,6 @@ namespace ImageServiceGUI.ViewModel
     class MainWindowViewModel
     {
         private IMainWindowModel mainWindowModel;
-        public ICommand CloseCommand { get; set; }
 
         public MainWindowViewModel(IMainWindowModel model)
         {
@@ -18,22 +17,10 @@ namespace ImageServiceGUI.ViewModel
             {
                 NotifyPropertyChanged("VM_" + e.PropertyName);
             };
-            //close command
-            this.CloseCommand = new DelegateCommand<object>(this.OnClose, this.CanClose);
         }
         public bool VM_IsConnected
         {
             get { return this.mainWindowModel.IsConnected; }
-        }
-
-        private void OnClose(object obj)
-        {
-            this.mainWindowModel.Communication.Disconnect();
-        }
-
-        private bool CanClose(object obj)
-        {
-            return true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
