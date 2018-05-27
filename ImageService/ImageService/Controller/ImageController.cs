@@ -1,13 +1,10 @@
 ﻿using ImageService.Commands;
-using ImageService.Infrastructure;
 using ImageService.Infrastructure.Enums;
 using ImageService.Logging;
 using ImageService.Modal;
 using ImageService.Server;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ImageService.Controller
@@ -30,7 +27,7 @@ namespace ImageService.Controller
             m_modal = modal;        //Storing the Modal Of The System
             m_loggingService = loggingService;
             commands = new Dictionary<int, ICommand>();         //creating the dictionary
-        
+
             //Adding commands to dictionary
             this.commands[((int)CommandEnum.NewFileCommand)] = new NewFileCommand(this.m_modal);
             this.commands[((int)CommandEnum.GetConfigCommand)] = new GetConfigCommand();
@@ -47,30 +44,22 @@ namespace ImageService.Controller
         /// <returns></returns>
         public string ExecuteCommand(int commandID, string[] args, out bool resultSuccesful)
         {
-            Task<Tuple<string, bool>> task = new Task<Tuple<string, bool>>(() => {
-                bool resultSuccesfulTemp;
-                string message = this.commands[commandID].Execute(args, out resultSuccesfulTemp);
-                return Tuple.Create(message, resultSuccesfulTemp);
-            });
-            task.Start();
-            task.Wait();
-            Tuple<string, bool> result = task.Result;
-            resultSuccesful = result.Item2;
-            return result.Item1;
+            bool temp;
+            //run the command
+            string message = this.commands[commandID].Execute(args, out temp);
+            //set result
+            resultSuccesful = temp;
+            //return message
+            return message;
         }
-
 
         public ImageServer Server
         {
-            get
-            {
-                return m_imageServer;
-            }
+            get { return m_imageServer; }
             set
             {
                 this.m_imageServer = value;
                 this.commands[((int)CommandEnum.CloseHandler)] = new CloseHandlerCommand(m_imageServer);
-
             }
         }
     }

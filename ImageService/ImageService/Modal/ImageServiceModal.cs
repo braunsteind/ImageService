@@ -1,14 +1,6 @@
-﻿using ImageService.Infrastructure;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ImageService.Modal
 {
@@ -26,41 +18,23 @@ namespace ImageService.Modal
         /// <param name="m_OutputFolder">The output folder</param>
         /// <param name="m_thumbnailSize">The thumbnail size</param>
         /// 
+        public ImageServiceModal(string m_OutputFolder, int m_thumbnailSize)
+        {
+            this.m_OutputFolder = m_OutputFolder;
+            this.m_thumbnailSize = m_thumbnailSize;
+        }
 
-            
         public string OutputFolder
         {
-            get
-            {
-                return this.m_OutputFolder;
-            }
-            set
-            {
-                this.m_OutputFolder = value;
-            }
+            get { return this.m_OutputFolder; }
+            set { this.m_OutputFolder = value; }
         }
 
         // The Size Of The Thumbnail Size
         public int ThumbnailSize
         {
-            get
-            {
-                return this.m_thumbnailSize;
-            }
-            set
-            {
-                this.m_thumbnailSize = value;
-            }
-        }
-
-
-
-
-
-        public ImageServiceModal(string m_OutputFolder, int m_thumbnailSize)
-        {
-            this.m_OutputFolder = m_OutputFolder;
-            this.m_thumbnailSize = m_thumbnailSize;
+            get { return this.m_thumbnailSize; }
+            set { this.m_thumbnailSize = value; }
         }
 
         public string AddFile(string path, out bool result)
