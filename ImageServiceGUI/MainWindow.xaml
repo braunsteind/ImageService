@@ -7,6 +7,11 @@
         xmlns:local="clr-namespace:ImageServiceGUI.Views"
         mc:Ignorable="d"
         Title="MainWindow" MinHeight="400" MinWidth="400" SizeToContent="WidthAndHeight">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Close">
+            <i:InvokeCommandAction  Command="{Binding CloseCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
         <Button>
             <Button.Style>
