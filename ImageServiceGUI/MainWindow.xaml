@@ -6,7 +6,7 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
         xmlns:local="clr-namespace:ImageServiceGUI.Views"
         mc:Ignorable="d"
-        Title="MainWindow" MinHeight="400" MinWidth="400" SizeToContent="WidthAndHeight">
+        Title="MainWindow" MinHeight="400" MinWidth="400" MaxHeight="600" MaxWidth="800" SizeToContent="WidthAndHeight">
     <Grid>
         <Button>
             <Button.Style>

@@ -7,15 +7,15 @@ namespace ImageService.Server
         /// <summary>
         /// Start the server
         /// </summary>
-        void Start();
-        /// <summary>
-        /// Stop the server
-        /// </summary>
-        void Stop();
+        void StartServer();
         /// <summary>
         /// Update args to the clients
         /// </summary>
         /// <param name="e">The args</param>
         void Update(CommandRecievedEventArgs e);
+        /// <summary>
+        /// Stop the server
+        /// </summary>
+        void StopServer();
     }
 }
