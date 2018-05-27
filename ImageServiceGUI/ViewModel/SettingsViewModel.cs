@@ -1,7 +1,5 @@
-﻿using ImageService.Commands;
-using ImageService.Infrastructure.Enums;
+﻿using ImageService.Infrastructure.Enums;
 using ImageService.Modal;
-using ImageServiceGUI.Communication;
 using ImageServiceGUI.Model;
 using Prism.Commands;
 using System;
@@ -13,6 +11,11 @@ namespace ImageServiceGUI.ViewModel
     class SettingsViewModel : INotifyPropertyChanged
     {
         private ISettingsModel settingsModel;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="model">The model</param>
         public SettingsViewModel(ISettingsModel model)
         {
             this.settingsModel = model;
@@ -23,9 +26,10 @@ namespace ImageServiceGUI.ViewModel
             try
             {
                 this.RemoveCommand = new DelegateCommand<object>(OnRemove, CanRemove);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -76,6 +80,8 @@ namespace ImageServiceGUI.ViewModel
             }
         }
 
+        public DelegateCommand<object> RemoveCommand { get; set; }
+
         /// <summary>
         /// Check if any item was selected for remove
         /// </summary>
@@ -89,12 +95,6 @@ namespace ImageServiceGUI.ViewModel
             return false;
         }
 
-        public DelegateCommand<object> RemoveCommand { get; set; }
-        /// <summary>
-        /// OnRemove function.
-        /// tells what will happen when we press Remove button.
-        /// </summary>
-        /// <param name="obj"></param>
         private void OnRemove(object obj)
         {
             try

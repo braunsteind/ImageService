@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
 using ImageService.Infrastructure.Enums;
-using Newtonsoft.Json.Linq;
 using ImageService.Modal;
 
 namespace ImageServiceGUI.Communication
 {
     class CommunicationSingleton : ICommunicationSingleton
     {
+        const string IP = "127.0.0.1";
+        const int PORT = 8000;
+
         TcpClient client;
         NetworkStream stream;
         BinaryReader reader;
@@ -32,24 +34,33 @@ namespace ImageServiceGUI.Communication
             Connect();
         }
 
+        /// <summary>
+        /// Get instance of the singleton
+        /// </summary>
         public static CommunicationSingleton Instance
         {
             get
             {
+                //if not instance, create one
                 if (instance == null)
                 {
                     instance = new CommunicationSingleton();
                 }
+                //if instance exist, return it
                 return instance;
             }
         }
 
+        /// <summary>
+        /// Connect to the server using TCP
+        /// </summary>
         private void Connect()
         {
             // try to connect
             try
             {
-                IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8000);
+                //connect to server
+                IPEndPoint ep = new IPEndPoint(IPAddress.Parse(IP), PORT);
                 client = new TcpClient();
                 client.Connect(ep);
                 stream = client.GetStream();
@@ -65,6 +76,10 @@ namespace ImageServiceGUI.Communication
             }
         }
 
+        /// <summary>
+        /// Write to the server
+        /// </summary>
+        /// <param name="command">The command the write</param>
         public void Write(CommandRecievedEventArgs command)
         {
             try
@@ -82,6 +97,9 @@ namespace ImageServiceGUI.Communication
             }
         }
 
+        /// <summary>
+        /// Reading info from the server
+        /// </summary>
         public void Read()
         {
             new Task(() =>
@@ -119,6 +137,9 @@ namespace ImageServiceGUI.Communication
             }).Start();
         }
 
+        /// <summary>
+        /// Disconnect from the server
+        /// </summary>
         public void Disconnect()
         {
             // close the connection

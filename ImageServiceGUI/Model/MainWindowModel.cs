@@ -6,8 +6,7 @@ namespace ImageServiceGUI.Model
     class MainWindowModel : IMainWindowModel
     {
         /// <summary>
-        /// Constructor.
-        /// Get Status of connection
+        /// Constructor
         /// </summary>
         public MainWindowModel()
         {
