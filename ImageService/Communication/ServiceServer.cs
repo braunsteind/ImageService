@@ -71,6 +71,7 @@ namespace ImageService.Server
                         }
                         catch (Exception e)
                         {
+                            Logging.Log("Error accepting a client" + e.Message, MessageTypeEnum.FAIL);
                             break;
                         }
                     }
@@ -86,30 +87,32 @@ namespace ImageService.Server
 
        
         
-        public void Update(CommandRecievedEventArgs commandRecievedEventArgs)
+        public void Update(CommandRecievedEventArgs args)
         {
             try
             {
-                List<TcpClient> copyClients = new List<TcpClient>(clientList);
-                foreach (TcpClient client in copyClients)
+                //loop on a mirror list
+                List<TcpClient> mirrorList = new List<TcpClient>(clientList);
+                foreach (TcpClient client in mirrorList)
                 {
                     new Task(() =>
                     {
                         try
                         {
+                            //serialize the command
+                            string execute = JsonConvert.SerializeObject(args);
+
                             //netowrk components
                             NetworkStream ns = client.GetStream();
                             BinaryWriter bw = new BinaryWriter(ns);
-                            string execute = JsonConvert.SerializeObject(commandRecievedEventArgs);
-
-
+                            
                             serverMutex.WaitOne();
                             bw.Write(execute);
                             serverMutex.ReleaseMutex();
                         }
                         catch (Exception e)
                         {
-                            Logging.Log("Failed writing to one of the clients", MessageTypeEnum.FAIL);
+                            Logging.Log("Error communicating with a client" + e.Message, MessageTypeEnum.FAIL);
                             this.clientList.Remove(client);
                         }
 
@@ -127,6 +130,7 @@ namespace ImageService.Server
         /// </summary>
         public void StopServer()
         {
+            Logging.Log("StopServer reached", MessageTypeEnum.INFO);
             Listener.Stop();
         }
 

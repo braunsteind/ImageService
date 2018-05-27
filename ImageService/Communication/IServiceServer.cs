@@ -12,7 +12,7 @@ namespace ImageService.Server
         /// Update args to the clients
         /// </summary>
         /// <param name="e">The args</param>
-        void Update(CommandRecievedEventArgs e);
+        void Update(CommandRecievedEventArgs args);
         /// <summary>
         /// Stop the server
         /// </summary>
