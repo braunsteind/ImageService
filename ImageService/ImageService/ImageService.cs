@@ -99,10 +99,10 @@ namespace ImageService
                 this.m_imageServer = new ImageServer(controller, logging);
                 this.controller.Server = m_imageServer;
                 IClientHandler ch = new ClientHandler(controller, logging);
-                imageServiceSrv = new ServiceServer(8000, logging, ch);
+                imageServiceSrv = new ServiceServer(logging, ch, 8000);
                 ImageServer.NotifyAllHandlerRemoved += imageServiceSrv.Update;
                 this.logging.UpdateLogEntries += imageServiceSrv.Update;
-                imageServiceSrv.Start();
+                imageServiceSrv.StartServer();
 
             }
             catch (Exception e)
@@ -208,7 +208,7 @@ namespace ImageService
             {
                 this.logging.InvokeUpdateEvent("Leave onStop", MessageTypeEnum.INFO);
             }
-            this.imageServiceSrv.Stop();
+            this.imageServiceSrv.StopServer();
         }
 
 
