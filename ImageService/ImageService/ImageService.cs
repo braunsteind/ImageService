@@ -1,13 +1,6 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using ImageService.Logging;
 using ImageService.Logging.Modal;
@@ -55,52 +48,34 @@ namespace ImageService
         private IImageServiceModal modal;
         private IImageController controller;
         private ILoggingService logging;
-        private IServiceServer imageServiceSrv;
+        private IServiceServer ServiceServer;
 
         /// <summary>
         /// Service constructor
         /// </summary>
         public ImageService()
         {
-            
-            InitializeComponent();
-            eventLog1 = new System.Diagnostics.EventLog();
-            eventLog1.Source = "ImageServiceSource";
-            eventLog1.Log = "ImageServiceLog";
-            this.logging = new LoggingService(eventLog1);
-            this.logging.MessageRecieved += WriteToEntry;
-
-
-
             try
             {
                 //read params from app config
-                eventLog1 = new System.Diagnostics.EventLog();
-                string sourceName = ConfigurationManager.AppSettings.Get("SourceName");
-                string log = ConfigurationManager.AppSettings.Get("LogName");         
-                if (!System.Diagnostics.EventLog.SourceExists(sourceName))
-                {
-                    System.Diagnostics.EventLog.CreateEventSource(sourceName, log);
-                }
-                eventLog1.Source = sourceName;
-                eventLog1.Log = log;
+                eventLog1 = new System.Diagnostics.EventLog();       
+                eventLog1.Source = ConfigurationManager.AppSettings.Get("SourceName");
+                eventLog1.Log = ConfigurationManager.AppSettings.Get("LogName");
                 //initialize members
                 this.logging = new LoggingService(this.eventLog1);
                 this.logging.MessageRecieved += WriteMessage;
-
-                string OutputFolder = ConfigurationManager.AppSettings.Get("OutputDir");
-                int ThumbnailSize = Int32.Parse(ConfigurationManager.AppSettings.Get("ThumbnailSize"));
-
-                this.modal = new ImageServiceModal(OutputFolder, ThumbnailSize);
-
+                string output = ConfigurationManager.AppSettings.Get("OutputDir");
+                int thumbSize = Int32.Parse(ConfigurationManager.AppSettings.Get("ThumbnailSize"));
+                this.modal = new ImageServiceModal(output, thumbSize);
                 this.controller = new ImageController(this.modal, this.logging);
                 this.m_imageServer = new ImageServer(controller, logging);
                 this.controller.Server = m_imageServer;
-                IClientHandler ch = new ClientHandler(controller, logging);
-                imageServiceSrv = new ServiceServer(logging, ch, 8000);
-                ImageServer.UpdateOnRemovingHandler += imageServiceSrv.Update;
-                this.logging.UpdateLogItems += imageServiceSrv.Update;
-                imageServiceSrv.StartServer();
+                int port = 8000;
+                IClientHandler handler = new ClientHandler(controller, logging);
+                ServiceServer = new ServiceServer(logging, handler, port);
+                ImageServer.UpdateOnRemovingHandler += ServiceServer.Update;
+                this.logging.UpdateLogItems += ServiceServer.Update;
+                ServiceServer.StartServer();
 
             }
             catch (Exception e)
@@ -117,8 +92,8 @@ namespace ImageService
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            /*
-            //start pending
+
+            // Update the service state to Start Pending.  
             ServiceStatus serviceStatus = new ServiceStatus();
             serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
             serviceStatus.dwWaitHint = 100000;
@@ -126,53 +101,21 @@ namespace ImageService
 
             //logging the server's starting
             eventLog1.WriteEntry("In OnStart");
-
-            //extracting relevant information from App.config file
-            string backupFolder = ConfigurationManager.AppSettings.Get("OutputDir");
-            int sizeOfThumbnail = Int32.Parse(ConfigurationManager.AppSettings.Get("ThumbnailSize"));
-
-
-            //creating the modal
-            this.modal = new ImageServiceModal(backupFolder, sizeOfThumbnail);
-            //creating controller
-            this.controller = new ImageController(this.modal);
-            //creating the server, using the modal and controller
-            this.m_imageServer = new ImageServer(this.controller, this.logging);
-
-            // Set up a timer to trigger every minute.  
-            System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Interval = 60000; // 60 seconds  
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnTimer);
-            timer.Start();
-
-            //update server to running
-            serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
-            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-            */
-
-            eventLog1.WriteEntry("In OnStart");
             if (this.logging != null)
             {
                 this.logging.EventUpdate("In OnStart", MessageTypeEnum.INFO);
             }
-            // Update the service state to Start Pending.  
-            ServiceStatus serviceStatus = new ServiceStatus();
-            serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
-            serviceStatus.dwWaitHint = 100000;
-            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+            
             // Set up a timer to trigger every minute.  
             System.Timers.Timer timer = new System.Timers.Timer();
             timer.Interval = 60000; // 60 seconds  
             timer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnTimer);
             timer.Start();
+
             // Update the service state to Running.  
             serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-            eventLog1.WriteEntry("Leave OnStart");
-            if (this.logging != null)
-            {
-                this.logging.EventUpdate("Leave OnStart", MessageTypeEnum.INFO);
-            }
+
         }
 
         protected override void OnStop()
