@@ -28,8 +28,7 @@ namespace ImageService.Server
         /// </summary>
         /// <param name="logging"></param>
         /// <param name="handler"></param>
-        /// <param name="port"></param>
-                    
+        /// <param name="port"></param>                 
         public ServiceServer (ILoggingService logging, IClientHandler handler, int port)
         {
             this.Logging = logging;
@@ -39,7 +38,10 @@ namespace ImageService.Server
             ClientHandler.MutexLock = serverMutex;
         }
 
-        
+        /// <summary>
+        /// Start the server.
+        /// Start listening to new clients
+        /// </summary>
         public void StartServer()
         {
             try
@@ -71,6 +73,7 @@ namespace ImageService.Server
                         }
                         catch (Exception e)
                         {
+                            Logging.Log("Error accepting a client" + e.Message, MessageTypeEnum.FAIL);
                             break;
                         }
                     }
@@ -85,31 +88,36 @@ namespace ImageService.Server
         }
 
        
-        
-        public void Update(CommandRecievedEventArgs commandRecievedEventArgs)
+        /// <summary>
+        /// Update clients that some change has occured.
+        /// </summary>
+        /// <param name="args"></param>
+        public void Update(CommandRecievedEventArgs args)
         {
             try
             {
-                List<TcpClient> copyClients = new List<TcpClient>(clientList);
-                foreach (TcpClient client in copyClients)
+                //loop on a mirror list
+                List<TcpClient> mirrorList = new List<TcpClient>(clientList);
+                foreach (TcpClient client in mirrorList)
                 {
                     new Task(() =>
                     {
                         try
                         {
+                            //serialize the command
+                            string execute = JsonConvert.SerializeObject(args);
+
                             //netowrk components
                             NetworkStream ns = client.GetStream();
                             BinaryWriter bw = new BinaryWriter(ns);
-                            string execute = JsonConvert.SerializeObject(commandRecievedEventArgs);
-
-
+                            //locked writing
                             serverMutex.WaitOne();
                             bw.Write(execute);
                             serverMutex.ReleaseMutex();
                         }
                         catch (Exception e)
                         {
-                            Logging.Log("Failed writing to one of the clients", MessageTypeEnum.FAIL);
+                            Logging.Log("Error communicating with a client" + e.Message, MessageTypeEnum.FAIL);
                             this.clientList.Remove(client);
                         }
 
@@ -127,6 +135,7 @@ namespace ImageService.Server
         /// </summary>
         public void StopServer()
         {
+            Logging.Log("StopServer reached", MessageTypeEnum.INFO);
             Listener.Stop();
         }
 

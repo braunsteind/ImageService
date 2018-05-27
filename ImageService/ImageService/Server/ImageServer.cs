@@ -1,15 +1,12 @@
-﻿using ImageService.Controller;
-using ImageService.Controller.Handlers;
-using ImageService.Infrastructure.Enums;
-using ImageService.Logging;
+﻿using ImageService.Logging;
 using ImageService.Logging.Modal;
+using ImageService.Controller;
+using ImageService.Controller.Handlers;
 using ImageService.Modal;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ImageService.Server
 {
@@ -20,23 +17,17 @@ namespace ImageService.Server
         private ILoggingService m_logging;
         #endregion
 
-        #region Properties
-        //*********START****
-        public delegate void NotifyAllClients(CommandRecievedEventArgs commandRecievedEventArgs);
-        public static event NotifyAllClients NotifyAllHandlerRemoved;
-        //*** END *****
+        #region Properties   
         public event EventHandler<CommandRecievedEventArgs> CommandRecieved;          // The event that notifies about a new Command being recieved
         public event EventHandler<DirectoryCloseEventArgs> CloseServer;
-        #endregion
 
+        public delegate void UpdateClients(CommandRecievedEventArgs args);
+        public static event UpdateClients UpdateOnRemovingHandler;
 
-        //****** START ******
+        public Dictionary<string, IDirectoryHandler> HandlerPerPath { get; set; }
         public IImageController Controller { get { return this.m_controller; } }
         public ILoggingService Logging { get { return this.m_logging; } }
-
-
-        public Dictionary<string, IDirectoryHandler> Handlers { get; set; }
-        //***** END ********
+        #endregion
 
 
         /// <summary>
@@ -48,9 +39,8 @@ namespace ImageService.Server
         {
             this.m_controller = controller;
             this.m_logging = logging;
-
-            this.Handlers = new Dictionary<string, IDirectoryHandler>();
-
+            //dictionary of folder path:relevant handler
+            this.HandlerPerPath = new Dictionary<string, IDirectoryHandler>();
             //creating handlers for each directory
             this.ExtractHandlersFromConfig();
         }
@@ -88,9 +78,7 @@ namespace ImageService.Server
         {
             //creating the handler
             IDirectoryHandler handler = new DirectoyHandler(m_logging, m_controller);
-            //****************
-            Handlers[path] = handler;
-            //*****************
+            HandlerPerPath[path] = handler;
             CommandRecieved += handler.OnCommandRecieved;
             //register the handler to CloseServer event
             this.CloseServer += handler.StopHandler;
@@ -98,34 +86,31 @@ namespace ImageService.Server
             this.m_logging.Log("Handler was created for directory: " + path, MessageTypeEnum.INFO);
         }
 
-        //************************************************************************************************
-    
-        public static void PerformSomeEvent(CommandRecievedEventArgs commandRecievedEventArgs)
+        /// <summary>
+        /// Update removal.
+        /// </summary>
+        /// <param name="args"></param>
+        public static void HandlerRemovalExecution(CommandRecievedEventArgs args)
         {
-            NotifyAllHandlerRemoved.Invoke(commandRecievedEventArgs);
+            UpdateOnRemovingHandler.Invoke(args);
         }
 
 
-
-
-
-
         /// <summary>
-        /// CloseSpecipicHandler function.
-        /// closes specipic handler.
+        /// Closing wanted handler.
         /// </summary>
-        /// <param name="toBeDeletedHandler">path of to be deleted handler</param>
-        internal void CloseSpecipicHandler(string toBeDeletedHandler)
+        /// <param name="handler"></param>
+        internal void CloseHandler(string path)
         {
-            if (Handlers.ContainsKey(toBeDeletedHandler))
+            //making sure path the wanted path exists
+            if (HandlerPerPath.ContainsKey(path))
             {
-                IDirectoryHandler handler = Handlers[toBeDeletedHandler];
+                IDirectoryHandler handler = HandlerPerPath[path];
                 this.CloseServer -= handler.StopHandler;
                 handler.StopHandler(this, null);
             }
 
         }
-        //*****************************************************************************
 
 
     /// <summary>

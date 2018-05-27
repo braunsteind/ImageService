@@ -9,131 +9,90 @@ namespace ImageService.Logging
 {
     public class LoggingService : ILoggingService
     {
+        private ObservableCollection<LogItem> logs;
         /// <summary>
         /// MessageRecieved event.
         /// in charge of wriiting message to log
         /// </summary>
         public event EventHandler<MessageRecievedEventArgs> MessageRecieved;
+        public event UpdateLogEntry UpdateLogItems;
 
-        //Invoked everytime a new event log entry is written to the log
-        public event UpdateLogEntry UpdateLogEntries;
-
-        // list of all the event log entries.
-        private ObservableCollection<LogItem> logMessages;
-
-        // property that wrapps logMessages.
-        public ObservableCollection<LogItem> LogMessages
+        //properties
+        public ObservableCollection<LogItem> LogItemCollection
         {
-            get { return this.logMessages; }
+            get { return this.logs; }
             set { throw new NotImplementedException(); }
         }
         
-
         /// <summary>
-        /// LoggingService constructor.
-        /// </summary>
-        /// <param name="eventLog">EventLog of the ImageService</param>
-        public LoggingService(EventLog eventLog)
-        {
-            this.logMessages = new ObservableCollection<LogItem>();
-            // retrieve all the eventLog entries and save them in this.logMessages.
-            GetAllLogEventMessages(eventLog);
-        }
-
-        /// <summary>
-        /// message function.
-        /// writes the message to log
-        /// </summary>
-        /// <param name="message"> the message</param>
-        /// <param name="type">type of message</param>
-        ///
-        public void Log(string message, MessageTypeEnum type)
-        {
-            MessageRecieved?.Invoke(this, new MessageRecievedEventArgs(type, message));
-
-            // adds the new event log entry to logMessages.
-            LogItem newLogEnrty = new LogItem { Type = Enum.GetName(typeof(MessageTypeEnum), type), Message = message };
-            this.LogMessages.Insert(0, newLogEnrty);
-
-            InvokeUpdateEvent(message, type);
-        }
-
-        /// <summary>
-        /// Invokes UpdateLogEntries event.
-        /// </summary>
-        /// <param name="message"> message</param>
-        /// <param name="type">entry type</param>
-        public void InvokeUpdateEvent(string message, MessageTypeEnum type)
-        {
-            LogItem logItem = new LogItem { Type = Enum.GetName(typeof(MessageTypeEnum), type), Message = message };
-            string[] args = new string[2];
-
-            // args[0] = EntryType, args[1] = Message
-            args[0] = logItem.Type;
-            args[1] = logItem.Message;
-            CommandRecievedEventArgs updateObj = new CommandRecievedEventArgs((int)CommandEnum.AddLogItem, args, null);
-            if (this.UpdateLogEntries != null)
-            {
-                UpdateLogEntries?.Invoke(updateObj);
-
-            }
-        }
-
-        /// <summary>
-        /// retrieve all the image service event log entries and adds 
+        /// Constructor.
+        /// Upon constuction, import logs
         /// </summary>
         /// <param name="eventLog"></param>
-        private void GetAllLogEventMessages(EventLog eventLog)
+        public LoggingService(EventLog eventLog)
         {
-            eventLog.WriteEntry("Enter GetAllLogEventMessages", EventLogEntryType.Warning);
-            EventLogEntry[] logs = new EventLogEntry[eventLog.Entries.Count];
+            //create an empty collection of LogItems
+            this.logs = new ObservableCollection<LogItem>();
+            int totalLogs = eventLog.Entries.Count;
+            EventLogEntry[] logs = new EventLogEntry[totalLogs];
             eventLog.Entries.CopyTo(logs, 0);
-            foreach (EventLogEntry entry in logs)
+            //add all logs to the list, in LogItem format
+            foreach (EventLogEntry logEntry in logs)
             {
-                this.LogMessages.Insert(0, new LogItem
+                string msg = logEntry.Message;
+                this.LogItemCollection.Insert(0, new LogItem
                 {
-                    Type = Enum.GetName(typeof(MessageTypeEnum), LoggingService.FromLogEventTypeToMessageTypeEnum(entry.EntryType)),
-                    Message = entry.Message
+                    Type = Enum.GetName(typeof(MessageTypeEnum), LoggingService.EventTypeToEnum(logEntry.EntryType)),
+                    Message = msg
                 });
             }
         }
 
-        /// <summary>
-        /// convert LogEventType to EventLogEntryType.
-        /// </summary>
-        /// <param name="type">entry type</param>
-        /// <returns>equivalent MessageTypeEnum</returns>
-        public static MessageTypeEnum FromLogEventTypeToMessageTypeEnum(EventLogEntryType type)
+
+        private static MessageTypeEnum EventTypeToEnum(EventLogEntryType type)
         {
             switch (type)
             {
-                case EventLogEntryType.Information:
-                    return MessageTypeEnum.INFO;
                 case EventLogEntryType.Warning:
                     return MessageTypeEnum.WARNING;
+                case EventLogEntryType.Information:
+                    return MessageTypeEnum.INFO;
                 case EventLogEntryType.Error:
                 default:
                     return MessageTypeEnum.FAIL;
             }
         }
 
+
         /// <summary>
-        /// convert EventLogEntryType to LogEventType.
+        /// Logging function. logging a message
         /// </summary>
-        /// <param name="type">entry type</param>
-        /// <returns>equivalent EventLogEntryType</returns>
-        public static EventLogEntryType FromMessageTypeEnumToEventLogEntryType(MessageTypeEnum type)
+        /// <param name="message">The message to log </param>
+        /// <param name="type">The type of message to log</param>
+        public void Log(string message, MessageTypeEnum type)
         {
-            switch (type)
+            MessageRecieved.Invoke(this, new MessageRecievedEventArgs(type, message));
+            //create new LogItem
+            LogItem newLog = new LogItem { Type = Enum.GetName(typeof(MessageTypeEnum), type), Message = message };
+            //add the created item to the list
+            this.LogItemCollection.Insert(0, newLog);
+
+            EventUpdate(message, type);
+        }
+
+
+        public void EventUpdate(string message, MessageTypeEnum type)
+        {
+            LogItem logItem = new LogItem { Type = Enum.GetName(typeof(MessageTypeEnum), type), Message = message };
+            string[] logParts = {logItem.Type, logItem.Message};
+            //add the log with the above information
+            CommandRecievedEventArgs command = new CommandRecievedEventArgs((int)CommandEnum.AddLogItem, logParts, null);
+            if (this.UpdateLogItems != null)
             {
-                case MessageTypeEnum.FAIL:
-                    return EventLogEntryType.Error;
-                case MessageTypeEnum.WARNING:
-                    return EventLogEntryType.Warning;
-                case MessageTypeEnum.INFO:
-                default:
-                    return EventLogEntryType.Information;
+                UpdateLogItems?.Invoke(command);
+
             }
         }
+
     }
 }
