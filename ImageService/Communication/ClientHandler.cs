@@ -15,73 +15,91 @@ namespace ImageService.Server
 {
     class ClientHandler : IClientHandler
     {
+        public static Mutex MutexLock { get; set; }
+        //Properties
         IImageController ImageController { get; set; }
         ILoggingService Logging { get; set; }
+        
+        //flow control indicator
+        private bool stoppedRunning = false;
+
         /// <summary>
-        /// ClientHandler constructor.
+        /// Constructor.
         /// </summary>
-        /// <param name="imageController">IImageController obj</param>
-        /// <param name="logging">ILoggingService obj</param>
-        public ClientHandler(IImageController imageController, ILoggingService logging)//, ImageServer imageServer)
+        /// <param name="ic">An image controller</param>
+        /// <param name="ls">A logging service object</param>
+        public ClientHandler(IImageController ic, ILoggingService ls)
         {
-            this.ImageController = imageController;
-            this.Logging = logging;
+            this.ImageController = ic;
+            this.Logging = ls;
 
         }
-        private bool m_isStopped = false;
-        public static Mutex Mutex { get; set; }
+
         /// <summary>
-        /// HandleClient function.
-        /// handles the client-server communication.
+        /// Handling client/clients.
         /// </summary>
-        /// <param name="client">specified client</param>
-        /// <param name="clients">list of all current clients</param>
-        public void HandleClient(TcpClient client, List<TcpClient> clients)
+        /// <param name="client">client to handle with</param>
+        /// <param name="clients">all connected clients</param>
+        public void HandleClient(TcpClient client, List<TcpClient> clientList)
         {
             try
             {
+                //handle inside a thread
                 new Task(() =>
                 {
                     try
                     {
-                        while (!m_isStopped)
+                        while (!stoppedRunning)
                         {
+                            //create network transaction objects
+                            NetworkStream ns = client.GetStream();
+                            BinaryReader br = new BinaryReader(ns);
+                            
+                            //log the recieved command
+                            string recieved = br.ReadString();
+                            string message = "Command recieved: " + recieved;
 
-                            NetworkStream stream = client.GetStream();
-                            BinaryReader reader = new BinaryReader(stream);
-                            BinaryWriter writer = new BinaryWriter(stream);
-                            string commandLine = reader.ReadString();
-                            Logging.Log("ClientHandler got command: " + commandLine, MessageTypeEnum.INFO);
-
-                            CommandRecievedEventArgs commandRecievedEventArgs = JsonConvert.DeserializeObject<CommandRecievedEventArgs>(commandLine);
-                            if (commandRecievedEventArgs.CommandID == (int)CommandEnum.DisconnectClient)
+                            Logging.Log(message, MessageTypeEnum.INFO);
+                            //Deserialize the client's command
+                            CommandRecievedEventArgs commandArgs = JsonConvert.DeserializeObject<CommandRecievedEventArgs>(recieved);
+                            //if a close command was recieved
+                            if (commandArgs.CommandID == (int)CommandEnum.DisconnectClient)
                             {
-                                clients.Remove(client);
+                                //remove client and close connection
+                                this.Logging.Log("Disconnecting client", MessageTypeEnum.INFO);
+                                clientList.Remove(client);
                                 client.Close();
                                 break;
-
                             }
-                            Console.WriteLine("Got command: {0}", commandLine);
-                            bool r;
-                            string result = this.ImageController.ExecuteCommand((int)commandRecievedEventArgs.CommandID,
-                                commandRecievedEventArgs.Args, out r);
-                            Mutex.WaitOne();
+                            //else, execute
+                            else
+                            {
+                                bool indicator;
+                                string executed = this.ImageController.ExecuteCommand((int)commandArgs.CommandID, commandArgs.Args, out indicator);
+                                
+                                //create the network writing object
+                                BinaryWriter bw = new BinaryWriter(ns);
 
-                            writer.Write(result);
-                            Mutex.ReleaseMutex();
+                                //lock the writing
+                                MutexLock.WaitOne();
+                                bw.Write(executed);
+                                MutexLock.ReleaseMutex();
+                            }
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception e)
                     {
-                        clients.Remove(client);
-                        Logging.Log(ex.ToString(), MessageTypeEnum.FAIL);
+                        //in case of exception, log the client's error and close connection
+                        Logging.Log(e.ToString(), MessageTypeEnum.FAIL);
+                        clientList.Remove(client);
                         client.Close();
                     }
+                    //start handling
                 }).Start();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logging.Log(ex.ToString(), MessageTypeEnum.FAIL);
+                Logging.Log(e.Message, MessageTypeEnum.FAIL);
 
             }
         }

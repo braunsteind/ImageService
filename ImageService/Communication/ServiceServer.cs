@@ -32,7 +32,7 @@ namespace ImageService.Server
             this.Port = port;
             this.Logging = logging;
             this.Ch = ch;
-            ClientHandler.Mutex = m_mutex;
+            ClientHandler.MutexLock = m_mutex;
         }
 
         /// <summary>
@@ -68,9 +68,9 @@ namespace ImageService.Server
                 });
                 task.Start();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logging.Log(ex.ToString(), MessageTypeEnum.FAIL);
+                Logging.Log(e.Message, MessageTypeEnum.FAIL);
             }
         }
 
@@ -106,27 +106,19 @@ namespace ImageService.Server
                             writer.Write(jsonCommand);
                             m_mutex.ReleaseMutex();
                         }
-                        catch (Exception ex)
+                        catch (Exception e)
                         {
+                            Logging.Log("Failed writing to one of the clients", MessageTypeEnum.FAIL);
                             this.clients.Remove(client);
                         }
 
                     }).Start();
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logging.Log(ex.ToString(), MessageTypeEnum.FAIL);
+                Logging.Log(e.Message, MessageTypeEnum.FAIL);
             }
-        }
-
-        /// <summary>
-        /// NotifyAboutNewLogEntry function.
-        /// </summary>
-        /// <param name="updateObj">CommandRecievedEventArgs obj</param>
-        private void NotifyAboutNewLogEntry(CommandRecievedEventArgs updateObj)
-        {
-            Update(updateObj);
         }
     }
 }

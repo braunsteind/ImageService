@@ -6,10 +6,10 @@ namespace ImageService.Server
     interface IClientHandler
     {
         /// <summary>
-        /// Handle the client in the server
+        /// Handle client/clients.
         /// </summary>
         /// <param name="client">The client to handle</param>
-        /// <param name="clients">All the clients</param>
-        void HandleClient(TcpClient client, List<TcpClient> clients);
+        /// <param name="clients">all connected clients</param>
+        void HandleClient(TcpClient client, List<TcpClient> clientList);
     }
 }
