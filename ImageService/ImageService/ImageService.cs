@@ -56,36 +56,34 @@ namespace ImageService
         private IImageController controller;
         private ILoggingService logging;
         private IServiceServer imageServiceSrv;
-        private List<Tuple<string, bool>> loggsMessages;
 
         /// <summary>
         /// Service constructor
         /// </summary>
         public ImageService()
         {
-            /*
+            
             InitializeComponent();
             eventLog1 = new System.Diagnostics.EventLog();
             eventLog1.Source = "ImageServiceSource";
             eventLog1.Log = "ImageServiceLog";
             this.logging = new LoggingService(eventLog1);
             this.logging.MessageRecieved += WriteToEntry;
-            */
+
 
 
             try
             {
-                InitializeComponent();
                 //read params from app config
-                string eventSourceName = ConfigurationManager.AppSettings.Get("SourceName");
-                string logName = ConfigurationManager.AppSettings.Get("LogName");
                 eventLog1 = new System.Diagnostics.EventLog();
-                if (!System.Diagnostics.EventLog.SourceExists(eventSourceName))
+                string sourceName = ConfigurationManager.AppSettings.Get("SourceName");
+                string log = ConfigurationManager.AppSettings.Get("LogName");         
+                if (!System.Diagnostics.EventLog.SourceExists(sourceName))
                 {
-                    System.Diagnostics.EventLog.CreateEventSource(eventSourceName, logName);
+                    System.Diagnostics.EventLog.CreateEventSource(sourceName, log);
                 }
-                eventLog1.Source = eventSourceName;
-                eventLog1.Log = logName;
+                eventLog1.Source = sourceName;
+                eventLog1.Log = log;
                 //initialize members
                 this.logging = new LoggingService(this.eventLog1);
                 this.logging.MessageRecieved += WriteMessage;
@@ -100,14 +98,14 @@ namespace ImageService
                 this.controller.Server = m_imageServer;
                 IClientHandler ch = new ClientHandler(controller, logging);
                 imageServiceSrv = new ServiceServer(logging, ch, 8000);
-                ImageServer.NotifyAllHandlerRemoved += imageServiceSrv.Update;
+                ImageServer.UpdateOnRemovingHandler += imageServiceSrv.Update;
                 this.logging.UpdateLogItems += imageServiceSrv.Update;
                 imageServiceSrv.StartServer();
 
             }
             catch (Exception e)
             {
-                this.eventLog1.WriteEntry(e.ToString(), EventLogEntryType.Error);
+                this.eventLog1.WriteEntry(e.Message, EventLogEntryType.Error);
             }
 
 
@@ -179,7 +177,7 @@ namespace ImageService
 
         protected override void OnStop()
         {
-            /*
+
             //logging the stopping request
             eventLog1.WriteEntry("In onStop.");
 
@@ -195,20 +193,6 @@ namespace ImageService
             //update service status to stopped
             serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-            */
-
-            eventLog1.WriteEntry("In onStop.");
-            if (this.logging != null)
-            {
-                this.logging.EventUpdate("In onStop", MessageTypeEnum.INFO);
-            }
-            this.m_imageServer.ServerClosing();
-            eventLog1.WriteEntry("Leave onStop.");
-            if (this.logging != null)
-            {
-                this.logging.EventUpdate("Leave onStop", MessageTypeEnum.INFO);
-            }
-            this.imageServiceSrv.StopServer();
         }
 
 
@@ -222,14 +206,7 @@ namespace ImageService
         /// </summary>
         protected override void OnContinue()
         {
-            /*
             eventLog1.WriteEntry("In OnContinue.");
-            */
-
-            if (this.logging != null)
-            {
-                this.logging.EventUpdate("In OnContinue.", MessageTypeEnum.INFO);
-            }
         }
 
         /// <summary>
@@ -239,47 +216,42 @@ namespace ImageService
         /// <param name="m">The message args</param>
         public void WriteToEntry(Object sender, MessageRecievedEventArgs m)
         {
-            eventLog1.WriteEntry(m.Message, StatusConverter(m.Status));
+            EventLogEntryType type;
+            if (m.Status == MessageTypeEnum.INFO)
+            {
+                type = EventLogEntryType.Information;
+            } else if (m.Status == MessageTypeEnum.WARNING)
+            {
+                type = EventLogEntryType.Warning;
+            } else
+            {
+                type = EventLogEntryType.Error;
+            }
+            eventLog1.WriteEntry(m.Message, type);
         }
+
 
         /// <summary>
-        /// Convert status to event log
+        /// Write message to log
         /// </summary>
-        /// <param name="status">The message status</param>
-        /// <returns></returns>
-        private EventLogEntryType StatusConverter(MessageTypeEnum status)
-        {
-            switch (status)
-            {
-                case MessageTypeEnum.INFO:
-                    return EventLogEntryType.Information;
-                case MessageTypeEnum.WARNING:
-                    return EventLogEntryType.Warning;
-                default:
-                    return EventLogEntryType.Error;
-            }
-        }
-
-
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void WriteMessage(Object sender, MessageRecievedEventArgs e)
         {
-            eventLog1.WriteEntry(e.Message, GetType(e.Status));
-        }
-
-
-
-        private EventLogEntryType GetType(MessageTypeEnum status)
-        {
-            switch (status)
+            EventLogEntryType type;
+            if (e.Status == MessageTypeEnum.FAIL)
             {
-                case MessageTypeEnum.FAIL:
-                    return EventLogEntryType.Error;
-                case MessageTypeEnum.WARNING:
-                    return EventLogEntryType.Warning;
-                case MessageTypeEnum.INFO:
-                default:
-                    return EventLogEntryType.Information;
+                type = EventLogEntryType.Error;
+            } else if (e.Status == MessageTypeEnum.WARNING)
+            {
+                type = EventLogEntryType.Warning;
+            } else
+            {
+                type = EventLogEntryType.Information;
             }
+
+            eventLog1.WriteEntry(e.Message, type);
         }
+
     }
 }

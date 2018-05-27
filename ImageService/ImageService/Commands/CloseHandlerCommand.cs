@@ -57,11 +57,11 @@ namespace ImageService.Commands
                 //config.Save(ConfigurationSaveMode.Modified);
                 // Force a reload of a changed section.
                 //ConfigurationManager.RefreshSection("appSettings");
-                this.server.CloseSpecipicHandler(toBeDeletedHandler);
+                this.server.CloseHandler(toBeDeletedHandler);
                 string[] array = new string[1];
                 array[0] = toBeDeletedHandler;
                 CommandRecievedEventArgs notifyParams = new CommandRecievedEventArgs((int)CommandEnum.CloseHandler, array, "");
-                ImageServer.PerformSomeEvent(notifyParams);
+                ImageServer.HandlerRemovalExecution(notifyParams);
                 return string.Empty;
             }
             catch (Exception e)
