@@ -28,8 +28,9 @@ namespace ImageService.Logging
         /// <param name="type"> the type of message to be written </param>
         void Log(string message, MessageTypeEnum type);           // Logging the Message
 
-        ObservableCollection<LogItem> LogMessages { get; set; }   //log entries list
-        event UpdateLogEntry UpdateLogEntries;  //Invoked everytime a new event log entry is written to the log
-        void InvokeUpdateEvent(string message, MessageTypeEnum type); // Invokes UpdateLogEntries event.
+        void EventUpdate(string message, MessageTypeEnum type);
+        event UpdateLogEntry UpdateLogItems;
+
+        ObservableCollection<LogItem> LogItemCollection { get; set; }    
     }
 }

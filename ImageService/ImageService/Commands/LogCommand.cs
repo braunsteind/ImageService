@@ -20,7 +20,7 @@ namespace ImageService.Commands
         {
             try
             {
-                ObservableCollection<LogItem> logMessages = logging.LogMessages;
+                ObservableCollection<LogItem> logMessages = logging.LogItemCollection;
                 
                 string jsonLogMessages = JsonConvert.SerializeObject(logMessages);
                 string[] arr = new string[1];

@@ -101,7 +101,7 @@ namespace ImageService
                 IClientHandler ch = new ClientHandler(controller, logging);
                 imageServiceSrv = new ServiceServer(logging, ch, 8000);
                 ImageServer.NotifyAllHandlerRemoved += imageServiceSrv.Update;
-                this.logging.UpdateLogEntries += imageServiceSrv.Update;
+                this.logging.UpdateLogItems += imageServiceSrv.Update;
                 imageServiceSrv.StartServer();
 
             }
@@ -155,7 +155,7 @@ namespace ImageService
             eventLog1.WriteEntry("In OnStart");
             if (this.logging != null)
             {
-                this.logging.InvokeUpdateEvent("In OnStart", MessageTypeEnum.INFO);
+                this.logging.EventUpdate("In OnStart", MessageTypeEnum.INFO);
             }
             // Update the service state to Start Pending.  
             ServiceStatus serviceStatus = new ServiceStatus();
@@ -173,7 +173,7 @@ namespace ImageService
             eventLog1.WriteEntry("Leave OnStart");
             if (this.logging != null)
             {
-                this.logging.InvokeUpdateEvent("Leave OnStart", MessageTypeEnum.INFO);
+                this.logging.EventUpdate("Leave OnStart", MessageTypeEnum.INFO);
             }
         }
 
@@ -200,13 +200,13 @@ namespace ImageService
             eventLog1.WriteEntry("In onStop.");
             if (this.logging != null)
             {
-                this.logging.InvokeUpdateEvent("In onStop", MessageTypeEnum.INFO);
+                this.logging.EventUpdate("In onStop", MessageTypeEnum.INFO);
             }
             this.m_imageServer.ServerClosing();
             eventLog1.WriteEntry("Leave onStop.");
             if (this.logging != null)
             {
-                this.logging.InvokeUpdateEvent("Leave onStop", MessageTypeEnum.INFO);
+                this.logging.EventUpdate("Leave onStop", MessageTypeEnum.INFO);
             }
             this.imageServiceSrv.StopServer();
         }
@@ -228,7 +228,7 @@ namespace ImageService
 
             if (this.logging != null)
             {
-                this.logging.InvokeUpdateEvent("In OnContinue.", MessageTypeEnum.INFO);
+                this.logging.EventUpdate("In OnContinue.", MessageTypeEnum.INFO);
             }
         }
 
