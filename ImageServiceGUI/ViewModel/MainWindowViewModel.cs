@@ -1,7 +1,6 @@
 ﻿using ImageService.Commands;
 using ImageServiceGUI.Model;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace ImageServiceGUI.ViewModel
@@ -17,7 +16,6 @@ namespace ImageServiceGUI.ViewModel
             {
                 NotifyPropertyChanged("VM_" + e.PropertyName);
             };
-            //this.CloseCommand = new DelegateCommand<object>(this.OnClose, this.CanClose);
         }
         public bool VM_IsConnected
         {
@@ -26,28 +24,11 @@ namespace ImageServiceGUI.ViewModel
 
         public ICommand CloseCommand { get; set; }
 
-
-        private void OnClose(object obj)
-        {
-            this.mainWindowModel.Communication.Disconnect();
-        }
-        /// <summary>
-        /// CanClose function.
-        /// defines if user can close the window.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        private bool CanClose(object obj)
-        {
-            return true;
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged(string propName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
-
     }
 }

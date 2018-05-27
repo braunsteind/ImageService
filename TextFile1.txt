@@ -1,2 +1,1 @@
-Communication
 MainWindowViewModel - CloseCommand, DelegateCommand

@@ -9,6 +9,11 @@ namespace ImageServiceGUI.ViewModel
     class LogViewModel : INotifyPropertyChanged
     {
         private ILogModel LogModel;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="model">The model</param>
         public LogViewModel(ILogModel model)
         {
             this.LogModel = model;

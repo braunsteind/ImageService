@@ -12,31 +12,39 @@ namespace ImageServiceGUI.Model
     {
         public ICommunicationSingleton Communication { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public SettingsModel()
         {
+            //get instance of communication
             this.Communication = CommunicationSingleton.Instance;
+            //sign to InMessage
             this.Communication.Read();
-            this.Communication.InMessage += IncomingMessage;
-
-            //this.OutputDirectory = string.Empty;
-            //this.SourceName = string.Empty;
-            //this.LogName = string.Empty;
-            //this.ThumbnailSize = string.Empty;
-
+            this.Communication.InMessage += UpdateSettings;
+            //create list of handelrs
             this.LbHandlers = new ObservableCollection<string>();
-            Object thisLock = new Object();
-            BindingOperations.EnableCollectionSynchronization(LbHandlers, thisLock);
+            Object settingsLock = new Object();
+            BindingOperations.EnableCollectionSynchronization(LbHandlers, settingsLock);
+            //write GetConfigCommand to server
             string[] arr = new string[5];
-            CommandRecievedEventArgs request = new CommandRecievedEventArgs((int)CommandEnum.GetConfigCommand, arr, "");
-            this.Communication.Write(request);
+            CommandRecievedEventArgs command = new CommandRecievedEventArgs((int)CommandEnum.GetConfigCommand, arr, "");
+            this.Communication.Write(command);
         }
 
-        private void IncomingMessage(object sender, CommandRecievedEventArgs e)
+        /// <summary>
+        /// Update the settings
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="e">The command event args</param>
+        private void UpdateSettings(object sender, CommandRecievedEventArgs e)
         {
             try
             {
+                //if the command is GetConfigCommand
                 if (e.CommandID == (int)CommandEnum.GetConfigCommand)
                 {
+                    //set the data
                     this.OutputDirectory = e.Args[0];
                     this.SourceName = e.Args[1];
                     this.LogName = e.Args[2];
@@ -47,12 +55,14 @@ namespace ImageServiceGUI.Model
                         this.LbHandlers.Add(handler);
                     }
                 }
+                //if the command is CloseHandler
                 else if (e.CommandID == (int)CommandEnum.CloseHandler)
                 {
+                    //check data is ok and close
                     if (LbHandlers != null && LbHandlers.Count > 0 && e != null
                         && e.Args != null && LbHandlers.Contains(e.Args[0]))
                     {
-                        bool result = this.LbHandlers.Remove(e.Args[0]);
+                        this.LbHandlers.Remove(e.Args[0]);
                     }
                 }
             }
@@ -121,9 +131,7 @@ namespace ImageServiceGUI.Model
 
         public void NotifyPropertyChanged(string propName)
         {
-            //this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
     }
 }
