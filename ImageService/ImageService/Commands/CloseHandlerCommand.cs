@@ -10,11 +10,11 @@ namespace ImageService.Commands
     class CloseHandlerCommand : ICommand
     {
 
-        private ImageServer m_imageServer;
+        private ImageServer server;
 
         public CloseHandlerCommand(ImageServer imageServer)
         {
-            this.m_imageServer = imageServer;
+            this.server = imageServer;
 
         }
 
@@ -26,9 +26,10 @@ namespace ImageService.Commands
         /// <returns>command return a string describes the operartion of the command.</returns>
         public string Execute(string[] args, out bool result)
         {
+            result = true;
             try
             {
-                result = true;
+               
                 if (args == null || args.Length == 0)
                 {
                     throw new Exception("Invalid args for deleting handler");
@@ -56,17 +57,17 @@ namespace ImageService.Commands
                 //config.Save(ConfigurationSaveMode.Modified);
                 // Force a reload of a changed section.
                 //ConfigurationManager.RefreshSection("appSettings");
-                this.m_imageServer.CloseSpecipicHandler(toBeDeletedHandler);
+                this.server.CloseSpecipicHandler(toBeDeletedHandler);
                 string[] array = new string[1];
                 array[0] = toBeDeletedHandler;
                 CommandRecievedEventArgs notifyParams = new CommandRecievedEventArgs((int)CommandEnum.CloseHandler, array, "");
                 ImageServer.PerformSomeEvent(notifyParams);
                 return string.Empty;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 result = false;
-                return ex.ToString();
+                return e.Message;
             }
 
         }

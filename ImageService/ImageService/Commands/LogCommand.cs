@@ -4,36 +4,41 @@ using ImageService.Modal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
+using ImageService.Logging.Modal;
 
 namespace ImageService.Commands
 {
     class LogCommand : ICommand
     {
-        private ILoggingService logging;
+        private ILoggingService loggingService;
 
-        public LogCommand(ILoggingService loggingService)
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="ls"></param>
+        public LogCommand(ILoggingService ls)
         {
-            logging = loggingService;
+            loggingService = ls;
+            this.loggingService.Log("Successfully created LogCommand", MessageTypeEnum.INFO);
         }
 
         public string Execute(string[] args, out bool result)
         {
+            result = true;
             try
-            {
-                ObservableCollection<LogItem> logMessages = logging.LogItemCollection;
-                
-                string jsonLogMessages = JsonConvert.SerializeObject(logMessages);
-                string[] arr = new string[1];
-                arr[0] = jsonLogMessages;
-                CommandRecievedEventArgs commandSendArgs = new CommandRecievedEventArgs((int)CommandEnum.LogCommand, arr, "");
-                result = true;
-                
-                return JsonConvert.SerializeObject(commandSendArgs);
+            {  
+                //serializing logs and command
+                ObservableCollection<LogItem> logItems = loggingService.LogItemCollection;
+                string logsTojson = JsonConvert.SerializeObject(logItems);
+                string[] info = { logsTojson };
+                CommandRecievedEventArgs send = new CommandRecievedEventArgs((int)CommandEnum.LogCommand, info, "");
+                return JsonConvert.SerializeObject(send);
             }
             catch (Exception e)
             {
                 result = false;
-                return "LogCommand.Execute: Failed execute log command";
+                string error = "Faiure occured inside LogCommand: " + e.Message;
+                return error;
             }
         }
     }
