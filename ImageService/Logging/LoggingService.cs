@@ -15,7 +15,6 @@ namespace ImageService.Logging
         /// in charge of wriiting message to log
         /// </summary>
         public event EventHandler<MessageRecievedEventArgs> MessageRecieved;
-
         public event UpdateLogEntry UpdateLogItems;
 
         //properties

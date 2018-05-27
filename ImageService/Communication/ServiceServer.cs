@@ -28,8 +28,7 @@ namespace ImageService.Server
         /// </summary>
         /// <param name="logging"></param>
         /// <param name="handler"></param>
-        /// <param name="port"></param>
-                    
+        /// <param name="port"></param>                 
         public ServiceServer (ILoggingService logging, IClientHandler handler, int port)
         {
             this.Logging = logging;
@@ -39,7 +38,10 @@ namespace ImageService.Server
             ClientHandler.MutexLock = serverMutex;
         }
 
-        
+        /// <summary>
+        /// Start the server.
+        /// Start listening to new clients
+        /// </summary>
         public void StartServer()
         {
             try
@@ -86,7 +88,10 @@ namespace ImageService.Server
         }
 
        
-        
+        /// <summary>
+        /// Update clients that some change has occured.
+        /// </summary>
+        /// <param name="args"></param>
         public void Update(CommandRecievedEventArgs args)
         {
             try
@@ -105,7 +110,7 @@ namespace ImageService.Server
                             //netowrk components
                             NetworkStream ns = client.GetStream();
                             BinaryWriter bw = new BinaryWriter(ns);
-                            
+                            //locked writing
                             serverMutex.WaitOne();
                             bw.Write(execute);
                             serverMutex.ReleaseMutex();

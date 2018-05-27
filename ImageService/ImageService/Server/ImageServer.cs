@@ -20,23 +20,17 @@ namespace ImageService.Server
         private ILoggingService m_logging;
         #endregion
 
-        #region Properties
-        //*********START****
-        public delegate void NotifyAllClients(CommandRecievedEventArgs commandRecievedEventArgs);
-        public static event NotifyAllClients NotifyAllHandlerRemoved;
-        //*** END *****
+        #region Properties   
         public event EventHandler<CommandRecievedEventArgs> CommandRecieved;          // The event that notifies about a new Command being recieved
         public event EventHandler<DirectoryCloseEventArgs> CloseServer;
-        #endregion
 
+        public delegate void UpdateClients(CommandRecievedEventArgs commandRecievedEventArgs);
+        public static event UpdateClients NotifyAllHandlerRemoved;
 
-        //****** START ******
+        public Dictionary<string, IDirectoryHandler> HandlerPerPath { get; set; }
         public IImageController Controller { get { return this.m_controller; } }
         public ILoggingService Logging { get { return this.m_logging; } }
-
-
-        public Dictionary<string, IDirectoryHandler> Handlers { get; set; }
-        //***** END ********
+        #endregion
 
 
         /// <summary>
@@ -48,9 +42,8 @@ namespace ImageService.Server
         {
             this.m_controller = controller;
             this.m_logging = logging;
-
-            this.Handlers = new Dictionary<string, IDirectoryHandler>();
-
+            //dictionary of folder path:relevant handler
+            this.HandlerPerPath = new Dictionary<string, IDirectoryHandler>();
             //creating handlers for each directory
             this.ExtractHandlersFromConfig();
         }
@@ -89,7 +82,7 @@ namespace ImageService.Server
             //creating the handler
             IDirectoryHandler handler = new DirectoyHandler(m_logging, m_controller);
             //****************
-            Handlers[path] = handler;
+            HandlerPerPath[path] = handler;
             //*****************
             CommandRecieved += handler.OnCommandRecieved;
             //register the handler to CloseServer event
@@ -100,9 +93,9 @@ namespace ImageService.Server
 
         //************************************************************************************************
     
-        public static void PerformSomeEvent(CommandRecievedEventArgs commandRecievedEventArgs)
+        public static void PerformSomeEvent(CommandRecievedEventArgs args)
         {
-            NotifyAllHandlerRemoved.Invoke(commandRecievedEventArgs);
+            NotifyAllHandlerRemoved.Invoke(args);
         }
 
 
@@ -117,9 +110,9 @@ namespace ImageService.Server
         /// <param name="toBeDeletedHandler">path of to be deleted handler</param>
         internal void CloseSpecipicHandler(string toBeDeletedHandler)
         {
-            if (Handlers.ContainsKey(toBeDeletedHandler))
+            if (HandlerPerPath.ContainsKey(toBeDeletedHandler))
             {
-                IDirectoryHandler handler = Handlers[toBeDeletedHandler];
+                IDirectoryHandler handler = HandlerPerPath[toBeDeletedHandler];
                 this.CloseServer -= handler.StopHandler;
                 handler.StopHandler(this, null);
             }
