@@ -9,13 +9,16 @@ namespace ImageService.Commands
 {
     class CloseHandlerCommand : ICommand
     {
-
+        //members
         private ImageServer server;
 
+        /// <summary>
+        /// Consrtuctor
+        /// </summary>
+        /// <param name="imageServer"></param>
         public CloseHandlerCommand(ImageServer imageServer)
         {
             this.server = imageServer;
-
         }
 
         /// <summary>
@@ -29,39 +32,22 @@ namespace ImageService.Commands
             result = true;
             try
             {
-               
-                if (args == null || args.Length == 0)
+                string wantedHandler = args[0];
+                string[] sources = (ConfigurationManager.AppSettings.Get("Handler").Split(';'));
+                StringBuilder restOfHandlers = new StringBuilder();
+                for (int i = 0; i < sources.Length; i++)
                 {
-                    throw new Exception("Invalid args for deleting handler");
-                }
-                string toBeDeletedHandler = args[0];
-                string[] directories = (ConfigurationManager.AppSettings.Get("Handler").Split(';'));
-                StringBuilder sbNewHandlers = new StringBuilder();
-                for (int i = 0; i < directories.Length; i++)
-                {
-                    if (directories[i] != toBeDeletedHandler)
+                    if (sources[i] != wantedHandler)
                     {
-                        sbNewHandlers.Append(directories[i] + ";");
+                        restOfHandlers.Append(sources[i] + ";");
                     }
                 }
-                string newHandlers = (sbNewHandlers.ToString()).TrimEnd(';');
-
+                string newHandlers = (restOfHandlers.ToString()).TrimEnd(';');
                 ConfigurationManager.AppSettings.Set("Handler", newHandlers);
-
-
-                //Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                // Add an Application Setting.
-                //config.AppSettings.Settings.Remove("Handler");
-                //config.AppSettings.Settings.Add("Handler", newHandlers);
-                // Save the configuration file.
-                //config.Save(ConfigurationSaveMode.Modified);
-                // Force a reload of a changed section.
-                //ConfigurationManager.RefreshSection("appSettings");
-                this.server.CloseHandler(toBeDeletedHandler);
-                string[] array = new string[1];
-                array[0] = toBeDeletedHandler;
-                CommandRecievedEventArgs notifyParams = new CommandRecievedEventArgs((int)CommandEnum.CloseHandler, array, "");
-                ImageServer.HandlerRemovalExecution(notifyParams);
+                this.server.CloseHandler(wantedHandler);
+                string[] info = { wantedHandler };
+                CommandRecievedEventArgs closeArgs = new CommandRecievedEventArgs((int)CommandEnum.CloseHandler, info, "");
+                ImageServer.HandlerRemovalExecution(closeArgs);
                 return string.Empty;
             }
             catch (Exception e)
