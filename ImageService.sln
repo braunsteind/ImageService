@@ -5,11 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageService", "ImageService\ImageService.csproj", "{F2161155-C196-48CE-8000-67A230AA5130}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{7BF2AEB8-CCC3-495D-A4FE-F739566AF357}"
-	ProjectSection(SolutionItems) = preProject
-		TextFile1.txt = TextFile1.txt
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageServiceGui", "ImageServiceGui\ImageServiceGui.csproj", "{E1E2F194-5CCC-4550-96E8-09822ADE2754}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageServiceWebApplication", "ImageServiceWebApplication\ImageServiceWebApplication.csproj", "{CDBF748D-1E61-4ADD-BFBC-F1068DE1799F}"
