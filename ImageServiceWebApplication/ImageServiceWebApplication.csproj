@@ -150,6 +150,8 @@
     <Compile Include="Models\ImageModel.cs" />
     <Compile Include="Models\Log.cs" />
     <Compile Include="Models\Logs.cs" />
+    <Compile Include="Models\Photo.cs" />
+    <Compile Include="Models\Photos.cs" />
     <Compile Include="Models\StudentInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -167,6 +169,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Image\Index.cshtml" />
     <Content Include="Views\Logs\Logs.cshtml" />
+    <Content Include="Views\Photos\Photos.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -177,7 +180,6 @@
   <ItemGroup>
     <Folder Include="Views\Config\" />
     <Folder Include="Views\Log\" />
-    <Folder Include="Views\Photos\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ImageService\ImageService.csproj">
