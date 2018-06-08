@@ -42,10 +42,10 @@ namespace ImageServiceWebApplication.Controllers
         public ActionResult Logs(FormCollection form)
         {
             string type = form["typeFilter"].ToString();
-            if (type == "")
+            /**if (type == "")
             {
                 return View(log.LogEntries);
-            }
+            }**/
             List<Log> filteredLogsList = new List<Log>();
             foreach (Log log in log.LogEntries)
             {

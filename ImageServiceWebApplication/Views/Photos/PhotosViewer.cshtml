@@ -1,0 +1,14 @@
+﻿@*
+@model ImageServiceWebApplication.Models.Photo
+
+@{
+    ViewBag.Title = "PhotosViewer";
+}
+
+<h2>PhotosViewer</h2>
+<br />
+<p>Name: @Model.Name</p>
+<p>Date: @Model.Month/@Model.Year   <a href="@Url.Action("DeletePhoto", new { photoRelPath = Model.ImageRelativePath})" id="btnDelete" class="btn btn-danger btn-xs" role="button">Delete</a></p>
+
+<img src="@Url.Content(Model.ImageRelativePath)">
+*@
