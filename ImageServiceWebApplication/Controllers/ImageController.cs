@@ -20,6 +20,7 @@ namespace ImageServiceWebApplication.Controllers
         // GET: Image
         public ActionResult Index()
         {
+            ViewBag.NumofPics = ImageModel.GetNumOfPics();
             return View(modelInstace);
         }
     }

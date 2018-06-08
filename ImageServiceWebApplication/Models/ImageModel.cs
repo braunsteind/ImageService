@@ -13,7 +13,7 @@ namespace ImageServiceWebApplication.Models
         private static Communication.ICommunicationSingleton client { get; set; }
         //public event NotifyAboutChange NotifyEvent;
         //private static Config m_config;
-        //private static string m_outputDir;
+        private static string m_outputDir;
 
         //members
         [Required]
@@ -38,6 +38,7 @@ namespace ImageServiceWebApplication.Models
                 client = Communication.CommunicationSingleton.Instance;
                 IsConnected = client.IsConnected;
                 NumofPics = 0;
+                m_outputDir = "C:/Users/ShlomiZ/Desktop/OutputDir";
                 //m_config = new Config();
                 //m_config.Notify += Notify;
                 Students = GetStudents();
@@ -73,6 +74,40 @@ namespace ImageServiceWebApplication.Models
             }
             return students;
         }
+
+
+
+
+
+
+        public static int GetNumOfPics()
+        {
+            try
+            {
+                if (m_outputDir == null || m_outputDir == "")
+                {
+                    return 4;
+                }
+                int counter = 0;
+                while (m_outputDir == null && (counter < 2)) { System.Threading.Thread.Sleep(1000); counter++; }
+                int sum = 0;
+                DirectoryInfo di = new DirectoryInfo(m_outputDir);
+                sum += di.GetFiles("*.JPG", SearchOption.AllDirectories).Length;
+                sum += di.GetFiles("*.jpg", SearchOption.AllDirectories).Length;
+                sum += di.GetFiles("*.GIF", SearchOption.AllDirectories).Length;
+                sum += di.GetFiles("*.gif", SearchOption.AllDirectories).Length;
+                sum += di.GetFiles("*.PNG", SearchOption.AllDirectories).Length;
+                sum += di.GetFiles("*.BMP", SearchOption.AllDirectories).Length;
+                
+                return sum / 2;
+            }
+            catch (Exception ex)
+            {
+                return 50;
+            }
+        }
+
+
 
     }
 }
