@@ -4,6 +4,19 @@
     ViewBag.Title = "ImageView";
 }
 
+<div>
+    <p>Server Status: </p>
+    @if (Model.IsConnected == true)
+    {
+        <p>Online</p>
+    }
+    else
+    {
+        <p>Offline</p>
+    }
+
+</div>
+
 <h2>Image View</h2>
 
 <table class="table">

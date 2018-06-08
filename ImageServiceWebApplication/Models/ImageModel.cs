@@ -13,7 +13,7 @@ namespace ImageServiceWebApplication.Models
         private static Communication.ICommunicationSingleton client { get; set; }
         //public event NotifyAboutChange NotifyEvent;
         //private static Config m_config;
-        private static string m_outputDir;
+        //private static string m_outputDir;
 
         //members
         [Required]
