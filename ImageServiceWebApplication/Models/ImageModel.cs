@@ -1,16 +1,15 @@
-﻿using System;
+﻿using ImageServiceWebApplication.Communication;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
-using System.Web;
 
 namespace ImageServiceWebApplication.Models
 {
     public class ImageModel
     {
 
-        private static Communication.ICommunicationSingleton client { get; set; }
+        private static ICommunicationSingleton client { get; set; }
         //public event NotifyAboutChange NotifyEvent;
         //private static Config m_config;
         private static string m_outputDir;
@@ -33,24 +32,14 @@ namespace ImageServiceWebApplication.Models
 
         public ImageModel()
         {
-            try
-            {
-                client = Communication.CommunicationSingleton.Instance;
-                IsConnected = client.IsConnected;
-                NumofPics = 0;
-                m_outputDir = "C:/Users/ShlomiZ/Desktop/OutputDir";
-                //m_config = new Config();
-                //m_config.Notify += Notify;
-                Students = GetStudents();
-            }
-            catch (Exception ex)
-            {
-
-            }
+            client = Communication.CommunicationSingleton.Instance;
+            IsConnected = client.IsConnected;
+            NumofPics = 0;
+            m_outputDir = "C:/Users/ShlomiZ/Desktop/OutputDir";
+            //m_config = new Config();
+            //m_config.Notify += Notify;
+            Students = GetStudents();
         }
-
-
-
 
         public static List<StudentInfo> GetStudents()
         {
@@ -75,11 +64,6 @@ namespace ImageServiceWebApplication.Models
             return students;
         }
 
-
-
-
-
-
         public static int GetNumOfPics()
         {
             try
@@ -98,7 +82,7 @@ namespace ImageServiceWebApplication.Models
                 sum += di.GetFiles("*.gif", SearchOption.AllDirectories).Length;
                 sum += di.GetFiles("*.PNG", SearchOption.AllDirectories).Length;
                 sum += di.GetFiles("*.BMP", SearchOption.AllDirectories).Length;
-                
+
                 return sum / 2;
             }
             catch (Exception ex)
@@ -106,8 +90,5 @@ namespace ImageServiceWebApplication.Models
                 return 50;
             }
         }
-
-
-
     }
 }
