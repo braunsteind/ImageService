@@ -172,6 +172,7 @@
     <Content Include="Views\Photos\Photos.cshtml" />
     <Content Include="Views\Photos\DeletePhoto.cshtml" />
     <Content Include="Views\Photos\PhotosViewer.cshtml" />
+    <Content Include="Views\Config\Config.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -179,10 +180,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Config\" />
-    <Folder Include="Views\Log\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ImageService\ImageService.csproj">
       <Project>{F2161155-C196-48CE-8000-67A230AA5130}</Project>
