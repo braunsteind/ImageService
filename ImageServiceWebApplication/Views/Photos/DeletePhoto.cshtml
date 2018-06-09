@@ -1,5 +1,4 @@
-﻿@*
-@model ImageServiceWebApplication.Models.Photo
+﻿@model ImageServiceWebApplication.Models.Photo
 
 @{
     ViewBag.Title = "DeletePhoto";
@@ -16,4 +15,3 @@
 <br />
 
 <p><a href="@Url.Action("Photos")" class="btn btn-info btn-xs" role="button">No</a> <a href="@Url.Action("DeleteYes", new { photoRelPath = Model.ImageRelativePath})" class="btn btn-danger btn-xs" role="button">Yes</a></p>
-*@

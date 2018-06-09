@@ -1,4 +1,4 @@
-﻿@*
+﻿
 @model ImageServiceWebApplication.Models.Photo
 
 @{
@@ -11,4 +11,3 @@
 <p>Date: @Model.Month/@Model.Year   <a href="@Url.Action("DeletePhoto", new { photoRelPath = Model.ImageRelativePath})" id="btnDelete" class="btn btn-danger btn-xs" role="button">Delete</a></p>
 
 <img src="@Url.Content(Model.ImageRelativePath)">
-*@
