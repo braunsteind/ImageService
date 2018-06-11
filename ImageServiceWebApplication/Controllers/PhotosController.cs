@@ -22,7 +22,6 @@ namespace ImageServiceWebApplication.Controllers
             Photos();
         }
 
-        // GET: Photos
         public ActionResult Photos()
         {
             photos.PhotosList.Clear();
