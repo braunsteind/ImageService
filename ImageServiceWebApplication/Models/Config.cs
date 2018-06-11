@@ -1,6 +1,7 @@
 ﻿using ImageService.Infrastructure.Enums;
 using ImageService.Modal;
 using ImageServiceWebApplication.Communication;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -39,9 +40,16 @@ namespace ImageServiceWebApplication.Models
         /// <param name="toBeDeleted"></param>
         public void DeleteHandler(string toBeDeleted)
         {
-            string[] arr = { toBeDeleted };
-            CommandRecievedEventArgs eventArgs = new CommandRecievedEventArgs((int)CommandEnum.CloseHandler, arr, "");
-            Communication.Write(eventArgs);
+            try
+            {
+                string[] arr = { toBeDeleted };
+                CommandRecievedEventArgs eventArgs = new CommandRecievedEventArgs((int)CommandEnum.CloseHandler, arr, "");
+                Communication.Write(eventArgs);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
         /// <summary>
         /// UpdateResponse function.

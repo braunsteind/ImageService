@@ -5,11 +5,7 @@ namespace ImageServiceWebApplication.Models
 {
     public class Photo
     {
-        /// <summary>
-        /// constructor.
-        /// initialize new photo obj.
-        /// </summary>
-        /// <param name="imageUrl"></param>
+        
         public Photo(string imageUrl)
         {
             ImageUrl = imageUrl;
@@ -18,14 +14,10 @@ namespace ImageServiceWebApplication.Models
             Month = Path.GetFileNameWithoutExtension(Path.GetDirectoryName(ImageUrl));
             Year = Path.GetFileNameWithoutExtension(Path.GetDirectoryName((Path.GetDirectoryName(ImageUrl))));
             string strDirName;
-
             int intLocation, intLength;
-
             intLength = imageUrl.Length;
             intLocation = imageUrl.IndexOf("OutputDir");
-
             strDirName = imageUrl.Substring(intLocation, intLength - intLocation);
-
             ImageRelativePathThumbnail = @"~\" + strDirName;// Images\Thumbnails\" + Year + @"\" + Month + @"\" + Path.GetFileName(ImageUrl);
             ImageRelativePath = ImageRelativePathThumbnail.Replace(@"Thumbnails\", string.Empty);
         }

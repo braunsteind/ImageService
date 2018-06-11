@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -173,6 +174,7 @@
     <Content Include="Views\Photos\DeletePhoto.cshtml" />
     <Content Include="Views\Photos\PhotosViewer.cshtml" />
     <Content Include="Views\Config\Config.cshtml" />
+    <Content Include="Views\Config\Confirm.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -180,9 +182,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="OutputDir\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ImageService\ImageService.csproj">
       <Project>{F2161155-C196-48CE-8000-67A230AA5130}</Project>

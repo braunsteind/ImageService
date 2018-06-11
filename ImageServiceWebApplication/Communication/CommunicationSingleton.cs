@@ -17,9 +17,6 @@ namespace ImageServiceWebApplication.Communication
         private static Mutex m_mutex = new Mutex();
         private static Mutex m_readMutex = new Mutex();
         TcpClient client;
-        //NetworkStream stream;
-        //BinaryReader reader;
-        //BinaryWriter writer;
         private static CommunicationSingleton instance;
         public event EventHandler<CommandRecievedEventArgs> InMessage;
         private bool isConnected;
@@ -65,9 +62,6 @@ namespace ImageServiceWebApplication.Communication
                 IPEndPoint ep = new IPEndPoint(IPAddress.Parse(IP), PORT);
                 client = new TcpClient();
                 client.Connect(ep);
-                //stream = client.GetStream();
-                //reader = new BinaryReader(stream);
-                //writer = new BinaryWriter(stream);
                 IsConnected = true;
             }
             // if error occurred

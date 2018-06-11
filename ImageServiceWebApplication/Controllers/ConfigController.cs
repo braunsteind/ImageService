@@ -1,4 +1,5 @@
 ﻿using ImageServiceWebApplication.Models;
+using System.Threading;
 using System.Web.Mvc;
 
 namespace ImageServiceWebApplication.Controllers
@@ -14,7 +15,7 @@ namespace ImageServiceWebApplication.Controllers
         /// </summary>
         public ConfigController()
         {
-            config.Notify -= Notify;
+            //config.Notify -= Notify;
             config.Notify += Notify;
         }
         /// <summary>
@@ -48,7 +49,7 @@ namespace ImageServiceWebApplication.Controllers
         {
             //delete the handler
             config.DeleteHandler(m_toBeDeletedHandler);
-            //go back to config page
+            Thread.Sleep(500);
             return RedirectToAction("Config");
 
         }
