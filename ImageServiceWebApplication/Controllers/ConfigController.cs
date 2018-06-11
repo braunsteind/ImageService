@@ -1,58 +1,71 @@
-﻿using ImageServiceWebApplication.Models;
+﻿using System.Web.Mvc;
 using System.Threading;
-using System.Web.Mvc;
+using ImageServiceWebApplication.Models;
 
 namespace ImageServiceWebApplication.Controllers
 {
     public class ConfigController : Controller
     {
+        //class static members
         static Config config = new Config();
-        private static string m_toBeDeletedHandler;
+        private static string handlerToRemove;
 
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public ConfigController()
         {
-            config.Notify += Notify;
+            config.Notify += Update;
         }
 
-
-        public void Notify()
+        /// <summary>
+        /// Updating config by creatin a new one.
+        /// </summary>
+        public void Update()
         {
             Config();
         }
 
-        
-        public ActionResult DeleteHandler(string toBeDeletedHandler)
+        /// <summary>
+        /// Redircetion for pressing one of the handlers
+        /// </summary>
+        /// <param name="toRemove"></param>
+        /// <returns></returns>
+        public ActionResult DeleteHandler(string toRemove)
         {
-            m_toBeDeletedHandler = toBeDeletedHandler;
-            return RedirectToAction("Confirm");
+            handlerToRemove = toRemove;
+            return RedirectToAction("Confirmation");
 
         }
         
-        public ActionResult Confirm()
+        /// <summary>
+        /// After confirmation, going back to config page
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Confirmation()
         {
             return View(config);
         }
         
+        /// <summary>
+        /// Config page view
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Config()
         {
             return View(config);
         }
         
-        public ActionResult DeleteOK()
+        /// <summary>
+        /// Action function for pressing the confirmation button
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult DeleteConfirmation()
         {
-            
-            config.DeleteHandler(m_toBeDeletedHandler);
-            Thread.Sleep(500);
+            config.DeleteHandler(handlerToRemove);
+            //sleeping to enable button pressing
+            Thread.Sleep(750);
             return RedirectToAction("Config");
-
-        }
-        
-        public ActionResult DeleteCancel()
-        {
-            
-            return RedirectToAction("Config");
-
         }
     }
 }

@@ -6,44 +6,54 @@ namespace ImageServiceWebApplication.Controllers
 {
     public class LogsController : Controller
     {
+        //static member
         public static Logs log = new Logs();
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public LogsController()
         {
-            log.Notify -= Notify;
-            log.Notify += Notify;
+            log.Notify -= Update;
+            log.Notify += Update;
         }
 
-
-        public void Notify()
-        {
-            Logs();
-        }
-
-
+        /// <summary>
+        /// Action function for pressing the Logs button
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Logs()
         {
             return View(log.LogEntries);
         }
 
- 
+        /// <summary>
+        /// Filtering logs
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
         [HttpPost]
-        public ActionResult Logs(FormCollection form)
+        public ActionResult Logs(FormCollection info)
         {
-            string type = form["typeFilter"].ToString();
-            if (type == "")
-            {
-                return View(log.LogEntries);
-            }
-            List<Log> filteredLogsList = new List<Log>();
+            string wantedLog = info["typeFilter"].ToString();
+            List<Log> filtered = new List<Log>();
             foreach (Log log in log.LogEntries)
             {
-                if (log.MessageType == type)
+                //filter logs of desired type
+                if (log.MessageType == wantedLog)
                 {
-                    filteredLogsList.Add(log);
+                    filtered.Add(log);
                 }
             }
-            return View(filteredLogsList);
+            return View(filtered);
+        }
+
+        /// <summary>
+        /// Updating logs
+        /// </summary>
+        public void Update()
+        {
+            Logs();
         }
     }
 }

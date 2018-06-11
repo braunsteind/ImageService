@@ -5,23 +5,24 @@ namespace ImageServiceWebApplication.Controllers
 {
     public class PhotosController : Controller
     {
+        //static members
         public static Photos photos = new Photos();
-        private static Photo m_currentPhoto;
+        private static Photo currentPhoto;
 
-        
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public PhotosController()
         {
-            photos.NotifyEvent -= Notify;
-            photos.NotifyEvent += Notify;
-
+            photos.NotifyEvent -= Update;
+            photos.NotifyEvent += Update;
         }
 
-        
-        void Notify()
-        {
-            Photos();
-        }
-
+        /// <summary>
+        /// Generate a new list on each access to
+        /// photos page
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Photos()
         {
             photos.PhotosList.Clear();
@@ -29,40 +30,61 @@ namespace ImageServiceWebApplication.Controllers
             return View(photos.PhotosList);
         }
 
-        
-        public ActionResult PhotosViewer(string photoRelPath)
-        {
-            UpdateCurrentPhotoFromRelPath(photoRelPath);
-            return View(m_currentPhoto);
-        }
-
-        
-        public ActionResult DeletePhoto(string photoRelPath)
-        {
-            UpdateCurrentPhotoFromRelPath(photoRelPath);
-            return View(m_currentPhoto);
-        }
-
-        
-        public ActionResult DeleteYes(string photoRelPath)
-        {
-            System.IO.File.Delete(m_currentPhoto.ImageUrl);
-            System.IO.File.Delete(m_currentPhoto.ImageFullUrl);
-            photos.PhotosList.Remove(m_currentPhoto);
-            return RedirectToAction("Photos");
-        }
-
-        
-        private void UpdateCurrentPhotoFromRelPath(string photoRelPath)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="relativePath"></param>
+        /// <returns></returns>
+        public ActionResult PhotosViewer(string relativePath)
         {
             foreach (Photo photo in photos.PhotosList)
             {
-                if (photo.ImageRelativePath == photoRelPath)
+                if (photo.ImageRelativePath == relativePath)
                 {
-                    m_currentPhoto = photo;
+                    currentPhoto = photo;
                     break;
                 }
             }
+            return View(currentPhoto);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="relativelPath"></param>
+        /// <returns></returns>
+        public ActionResult DeletePhoto(string relativelPath)
+        {
+            foreach (Photo photo in photos.PhotosList)
+            {
+                if (photo.ImageRelativePath == relativelPath)
+                {
+                    currentPhoto = photo;
+                    break;
+                }
+            }
+            return View(currentPhoto);
+        }
+
+        /// <summary>
+        /// Deleting both photo and thumbnail
+        /// </summary>
+        /// <param name="relativelPath"></param>
+        /// <returns></returns>
+        public ActionResult DeleteYes(string relativelPath)
+        {
+            System.IO.File.Delete(currentPhoto.ImageUrl);
+            System.IO.File.Delete(currentPhoto.ImageFullUrl);
+            photos.PhotosList.Remove(currentPhoto);
+            return RedirectToAction("Photos");
+        }
+
+        /// <summary>
+        /// Update function
+        /// </summary>
+        void Update()
+        {
+            Photos();
         }
     }
 }

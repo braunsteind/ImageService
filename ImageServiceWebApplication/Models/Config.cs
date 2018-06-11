@@ -14,10 +14,6 @@ namespace ImageServiceWebApplication.Models
         private static Communication.ICommunicationSingleton Communication { get; set; }
 
 
-        /// <summary>
-        /// constructor.
-        /// initialize new config params.
-        /// </summary>
         public Config()
         {
             Communication = CommunicationSingleton.Instance;
@@ -33,11 +29,7 @@ namespace ImageServiceWebApplication.Models
             CommandRecievedEventArgs request = new CommandRecievedEventArgs((int)CommandEnum.GetConfigCommand, arr, "");
             Communication.Write(request);
         }
-        /// <summary>
-        /// DeleteHandler function.
-        /// deletes handler.
-        /// </summary>
-        /// <param name="toBeDeleted"></param>
+
         public void DeleteHandler(string toBeDeleted)
         {
             try
@@ -51,11 +43,7 @@ namespace ImageServiceWebApplication.Models
 
             }
         }
-        /// <summary>
-        /// UpdateResponse function.
-        /// updates the model when message recieved from srv.
-        /// </summary>
-        /// <param name="responseObj">the info came from srv</param>
+
         private void UpdateResponse(object sender, CommandRecievedEventArgs responseObj)
         {
             if (responseObj != null)
@@ -69,15 +57,11 @@ namespace ImageServiceWebApplication.Models
                         CloseHandler(responseObj);
                         break;
                 }
-                //update controller
+                
                 Notify?.Invoke();
             }
         }
 
-        /// <summary>
-        /// CloseHandler function.
-        /// </summary>
-        /// <param name="responseObj">the info came from srv</param>
         private void CloseHandler(CommandRecievedEventArgs responseObj)
         {
             if (Handlers != null && Handlers.Count > 0 && responseObj != null && responseObj.Args != null
@@ -88,11 +72,7 @@ namespace ImageServiceWebApplication.Models
         }
 
 
-        /// <summary>
-        /// UpdateConfigurations function.
-        /// updates app config params.
-        /// </summary>
-        /// <param name="responseObj">the info came from srv</param>
+
         private void UpdateConfigurations(CommandRecievedEventArgs responseObj)
         {
             OutputDirectory = responseObj.Args[0];
