@@ -41,6 +41,7 @@ namespace ImageService.Modal
         {
             string copyPath;
             string copyThumb;
+            string ext = Path.GetExtension(path);
 
             //adding this feature to support instant download of images directly to the folder
             System.Threading.Thread.Sleep(500);
@@ -70,14 +71,14 @@ namespace ImageService.Modal
                 //save the image in the copy path
                 img.Save(copyPath);
                 //save the thumbnail
-                thumb.Save(Path.ChangeExtension(copyThumb, "jpg"));
+                thumb.Save(Path.ChangeExtension(copyThumb, ext));
 
                 //dispose
                 img.Dispose();
                 File.Delete(path);
 
                 //check the copies worked and exists
-                if (File.Exists(copyPath) && File.Exists(Path.ChangeExtension(copyThumb, "jpg")))
+                if (File.Exists(copyPath) && File.Exists(Path.ChangeExtension(copyThumb, ext)))
                 {
                     result = true;
                     return copyPath;
