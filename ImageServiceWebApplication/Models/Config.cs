@@ -10,7 +10,7 @@ namespace ImageServiceWebApplication.Models
     {
         public delegate void NotifyAboutChange();
         public event NotifyAboutChange Notify;
-        private static ICommunicationSingleton Communication { get; set; }
+        private static Communication.ICommunicationSingleton Communication { get; set; }
 
 
         /// <summary>

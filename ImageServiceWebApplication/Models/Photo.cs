@@ -22,7 +22,7 @@ namespace ImageServiceWebApplication.Models
             int intLocation, intLength;
 
             intLength = imageUrl.Length;
-            intLocation = imageUrl.IndexOf("Images");
+            intLocation = imageUrl.IndexOf("OutputDir");
 
             strDirName = imageUrl.Substring(intLocation, intLength - intLocation);
 

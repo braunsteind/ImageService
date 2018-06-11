@@ -240,3 +240,9 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/ImageServiceWebApplication/OutputDir/Thumbnails/2017/7/Screen-Shot-2017-06-20-at-9.50.13-AM.jpg
+/ImageServiceWebApplication/OutputDir/Thumbnails/2017/10/22853251_1696987213679128_3979864467962849240_n.jpg
+/ImageServiceWebApplication/OutputDir/Thumbnails/2014/5/1564861.jpg
+/ImageServiceWebApplication/OutputDir/2017/7/Screen-Shot-2017-06-20-at-9.50.13-AM.jpg
+/ImageServiceWebApplication/OutputDir/2017/10/22853251_1696987213679128_3979864467962849240_n.jpg
+/ImageServiceWebApplication/OutputDir/2014/5/1564861.jpg

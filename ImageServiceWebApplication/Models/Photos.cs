@@ -51,7 +51,7 @@ namespace ImageServiceWebApplication.Models
             }
             DirectoryInfo di = new DirectoryInfo(thumbnailDir);
             //The only file types are relevant.
-            string[] validExtensions = { ".jpg", ".png", ".gif", ".bmp" };
+            string[] validExtensions = { ".jpg", ".png", ".gif", ".bmp" , ".thumb"};
             foreach (DirectoryInfo yearDirInfo in di.GetDirectories())
             {
                 if (!Path.GetDirectoryName(yearDirInfo.FullName).EndsWith("Thumbnails"))

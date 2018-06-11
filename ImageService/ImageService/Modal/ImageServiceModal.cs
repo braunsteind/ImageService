@@ -70,14 +70,14 @@ namespace ImageService.Modal
                 //save the image in the copy path
                 img.Save(copyPath);
                 //save the thumbnail
-                thumb.Save(Path.ChangeExtension(copyThumb, "thumb"));
+                thumb.Save(Path.ChangeExtension(copyThumb, "jpg"));
 
                 //dispose
                 img.Dispose();
                 File.Delete(path);
 
                 //check the copies worked and exists
-                if (File.Exists(copyPath) && File.Exists(Path.ChangeExtension(copyThumb, "thumb")))
+                if (File.Exists(copyPath) && File.Exists(Path.ChangeExtension(copyThumb, "jpg")))
                 {
                     result = true;
                     return copyPath;

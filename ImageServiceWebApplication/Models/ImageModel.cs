@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using static ImageServiceWebApplication.Models.Config;
 
 namespace ImageServiceWebApplication.Models
 {
@@ -10,8 +11,8 @@ namespace ImageServiceWebApplication.Models
     {
 
         private static ICommunicationSingleton client { get; set; }
-        //public event NotifyAboutChange NotifyEvent;
-        //private static Config m_config;
+        public event NotifyAboutChange NotifyEvent;
+        private static Config m_config;
         private static string m_outputDir;
 
         //members
@@ -35,9 +36,9 @@ namespace ImageServiceWebApplication.Models
             client = Communication.CommunicationSingleton.Instance;
             IsConnected = client.IsConnected;
             NumofPics = 0;
-            m_outputDir = "C:/Users/ShlomiZ/Desktop/OutputDir";
-            //m_config = new Config();
-            //m_config.Notify += Notify;
+            m_outputDir = "";
+            m_config = new Config();
+            m_config.Notify += Notify;
             Students = GetStudents();
         }
 
@@ -90,5 +91,17 @@ namespace ImageServiceWebApplication.Models
                 return 50;
             }
         }
+
+
+        void Notify()
+        {
+            if (m_config.OutputDirectory != "")
+            {
+                m_outputDir = m_config.OutputDirectory;
+                NumofPics = GetNumOfPics();
+                NotifyEvent?.Invoke();
+            }
+        }
+
     }
 }
