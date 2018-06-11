@@ -71,24 +71,25 @@ namespace ImageServiceWebApplication.Models
             {
                 if (m_outputDir == null || m_outputDir == "")
                 {
-                    return 4;
+                    return 0;
                 }
+
+
                 int counter = 0;
                 while (m_outputDir == null && (counter < 2)) { System.Threading.Thread.Sleep(1000); counter++; }
                 int sum = 0;
-                DirectoryInfo di = new DirectoryInfo(m_outputDir);
+                string path = m_outputDir + "\\Thumbnails";
+                DirectoryInfo di = new DirectoryInfo(path);
                 sum += di.GetFiles("*.JPG", SearchOption.AllDirectories).Length;
-                sum += di.GetFiles("*.jpg", SearchOption.AllDirectories).Length;
                 sum += di.GetFiles("*.GIF", SearchOption.AllDirectories).Length;
-                sum += di.GetFiles("*.gif", SearchOption.AllDirectories).Length;
                 sum += di.GetFiles("*.PNG", SearchOption.AllDirectories).Length;
                 sum += di.GetFiles("*.BMP", SearchOption.AllDirectories).Length;
 
-                return sum / 2;
+                return sum;
             }
             catch (Exception ex)
             {
-                return 50;
+                return 0;
             }
         }
 

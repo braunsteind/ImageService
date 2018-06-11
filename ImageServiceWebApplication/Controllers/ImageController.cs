@@ -9,15 +9,9 @@ namespace ImageServiceWebApplication.Controllers
         static ImageModel modelInstace = new ImageModel();
 
 
-        public ImageController()
-        {
-            //ImageViewInfoObj.NotifyEvent -= Notify;
-            //ImageViewInfoObj.NotifyEvent += Notify;
-
-        }
+        public ImageController() {}
 
 
-        // GET: Image
         public ActionResult Index()
         {
             ViewBag.NumofPics = ImageModel.GetNumOfPics();
