@@ -18,7 +18,7 @@ namespace ImageServiceWebApplication.Models
             intLength = imageUrl.Length;
             intLocation = imageUrl.IndexOf("OutputDir");
             strDirName = imageUrl.Substring(intLocation, intLength - intLocation);
-            ImageRelativePathThumbnail = @"~\" + strDirName;// Images\Thumbnails\" + Year + @"\" + Month + @"\" + Path.GetFileName(ImageUrl);
+            ImageRelativePathThumbnail = @"~\" + strDirName;
             ImageRelativePath = ImageRelativePathThumbnail.Replace(@"Thumbnails\", string.Empty);
         }
 
