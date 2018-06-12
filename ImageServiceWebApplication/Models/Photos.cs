@@ -20,7 +20,7 @@ namespace ImageServiceWebApplication.Models
             config = new Config();
             config.propertyChanged += Update;
         }
-        
+
 
         void Update()
         {
@@ -32,7 +32,7 @@ namespace ImageServiceWebApplication.Models
             }
         }
 
-        
+
 
         public void GetPhotos()
         {
@@ -49,27 +49,23 @@ namespace ImageServiceWebApplication.Models
                 return;
             }
             DirectoryInfo info = new DirectoryInfo(thumbDir);
-            
-            string[] validExtensions = { ".jpg", ".png", ".gif", ".bmp"};
-            foreach (DirectoryInfo yearDirInfo in info.GetDirectories())
+
+            string[] pictureType = { ".jpg", ".png", ".gif", ".bmp" };
+            foreach (DirectoryInfo year in info.GetDirectories())
             {
-                if (!Path.GetDirectoryName(yearDirInfo.FullName).EndsWith("Thumbnails"))
+                if (Path.GetDirectoryName(year.FullName).EndsWith("Thumbnails"))
                 {
-                    continue;
-                }
-                foreach (DirectoryInfo monthDirInfo in yearDirInfo.GetDirectories())
-                {
-
-
-                    foreach (FileInfo fileInfo in monthDirInfo.GetFiles())
+                    foreach (DirectoryInfo month in year.GetDirectories())
                     {
-                        if (validExtensions.Contains(fileInfo.Extension.ToLower()))
+                        foreach (FileInfo fileInfo in month.GetFiles())
                         {
-                            Photo p = PhotosList.Find(x => (x.Url == fileInfo.FullName));
-                            if (p == null)
+                            if (pictureType.Contains(fileInfo.Extension.ToLower()))
                             {
-                                PhotosList.Add(new Photo(fileInfo.FullName));
-
+                                Photo photo = PhotosList.Find(x => (x.Url == fileInfo.FullName));
+                                if (photo == null)
+                                {
+                                    PhotosList.Add(new Photo(fileInfo.FullName));
+                                }
                             }
                         }
                     }
