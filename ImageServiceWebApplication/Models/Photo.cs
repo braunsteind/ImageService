@@ -6,21 +6,22 @@ namespace ImageServiceWebApplication.Models
     public class Photo
     {
         
-        public Photo(string imageUrl)
+        public Photo(string imagePath)
         {
-            ImageUrl = imageUrl;
-            ImageFullUrl = imageUrl.Replace(@"Thumbnails\", string.Empty);
+            ImageUrl = imagePath;
+            ImageFullUrl = imagePath.Replace(@"Thumbnails\", string.Empty);
             Name = Path.GetFileNameWithoutExtension(ImageUrl);
             Month = Path.GetFileNameWithoutExtension(Path.GetDirectoryName(ImageUrl));
             Year = Path.GetFileNameWithoutExtension(Path.GetDirectoryName((Path.GetDirectoryName(ImageUrl))));
             string strDirName;
             int intLocation, intLength;
-            intLength = imageUrl.Length;
-            intLocation = imageUrl.IndexOf("OutputDir");
-            strDirName = imageUrl.Substring(intLocation, intLength - intLocation);
+            intLength = imagePath.Length;
+            intLocation = imagePath.IndexOf("OutputDir");
+            strDirName = imagePath.Substring(intLocation, intLength - intLocation);
             ImageRelativePathThumbnail = @"~\" + strDirName;
             ImageRelativePath = ImageRelativePathThumbnail.Replace(@"Thumbnails\", string.Empty);
         }
+
 
 
         //members
