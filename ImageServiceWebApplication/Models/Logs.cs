@@ -11,54 +11,55 @@ namespace ImageServiceWebApplication.Models
 {
     public class Logs
     {
-        public delegate void NotifyAboutChange();
-        public event NotifyAboutChange Notify;
-        private static ICommunicationSingleton Communication;
-        
-
-        public Logs()
-        {
-            Communication = CommunicationSingleton.Instance;
-            Communication.InMessage += UpdateResponse;
-            Communication.Read();
-            this.InitializeLogsParams();
-        }
-
         //members
+        public delegate void NotifyAboutChange();
+        public event NotifyAboutChange Update;
+        private static ICommunicationSingleton Communication;
+  
         [Required]
         [DataType(DataType.Text)]
         [Display(Name = "Log Enteries")]
-        public List<Log> LogEntries { get; set; }
+        public List<Log> LogItems { get; set; }
 
-        
-        private void InitializeLogsParams()
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public Logs()
         {
-            LogEntries = new List<Log>();
-            CommandRecievedEventArgs commandRecievedEventArgs = new CommandRecievedEventArgs((int)CommandEnum.LogCommand, null, "");
-            Communication.Write(commandRecievedEventArgs);
+            Communication = CommunicationSingleton.Instance;
+            Communication.InMessage += UpdateAction;
+            Communication.Read();
+            LogItems = new List<Log>();
+            CommandRecievedEventArgs args = new CommandRecievedEventArgs((int)CommandEnum.LogCommand, null, "");
+            Communication.Write(args);
         }
 
         
-        private void UpdateResponse(object sender, CommandRecievedEventArgs responseObj)
+        /// <summary>
+        /// Update the logs list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void UpdateAction(object sender, CommandRecievedEventArgs args)
         {
-            if (responseObj != null)
+            if (args != null)
             {
-                switch (responseObj.CommandID)
-                {
+                switch (args.CommandID) { 
+                
                     case (int)CommandEnum.LogCommand:
-                        foreach (LogItem log in JsonConvert.DeserializeObject<ObservableCollection<LogItem>>(responseObj.Args[0]))
+                        foreach (LogItem log in JsonConvert.DeserializeObject<ObservableCollection<LogItem>>(args.Args[0]))
                         {
-                            LogEntries.Add(new Log { MessageType = log.Type, Message = log.Message });
+                            LogItems.Add(new Log { MessageType = log.Type, Message = log.Message });
                         }
                         break;
                     case (int)CommandEnum.AddLogItem:
-                        LogItem newLogEntry = new LogItem { Type = responseObj.Args[0], Message = responseObj.Args[1] };
-                        this.LogEntries.Insert(0, new Log { MessageType = newLogEntry.Type, Message = newLogEntry.Message });
+                        LogItem newLog = new LogItem { Type = args.Args[0], Message = args.Args[1] };
+                        this.LogItems.Insert(0, new Log { MessageType = newLog.Type, Message = newLog.Message });
                         break;
                     default:
                         break;
                 }
-                Notify?.Invoke();
+                Update?.Invoke();
             }
         }
     }

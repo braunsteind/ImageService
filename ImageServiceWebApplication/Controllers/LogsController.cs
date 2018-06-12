@@ -14,8 +14,8 @@ namespace ImageServiceWebApplication.Controllers
         /// </summary>
         public LogsController()
         {
-            log.Notify -= Update;
-            log.Notify += Update;
+            log.Update -= Update;
+            log.Update += Update;
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace ImageServiceWebApplication.Controllers
         /// <returns></returns>
         public ActionResult Logs()
         {
-            return View(log.LogEntries);
+            return View(log.LogItems);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace ImageServiceWebApplication.Controllers
         {
             string wantedLog = info["typeFilter"].ToString();
             List<Log> filtered = new List<Log>();
-            foreach (Log log in log.LogEntries)
+            foreach (Log log in log.LogItems)
             {
                 //filter logs of desired type
                 if (log.MessageType == wantedLog)
