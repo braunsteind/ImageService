@@ -8,23 +8,25 @@ namespace ImageServiceWebApplication.Models
     public class Photos
     {
         public event PropertyChanged update;
-        private static Config m_config;
-        private string m_outputDir;
+        private static Config config;
+        private string outputDir;
         public List<Photo> PhotosList = new List<Photo>();
 
-        
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Photos()
         {
-            m_config = new Config();
-            m_config.propertyChanged += Update;
+            config = new Config();
+            config.propertyChanged += Update;
         }
         
 
         void Update()
         {
-            if (m_config.OutputDirectory != "")
+            if (config.OutputDirectory != "")
             {
-                m_outputDir = m_config.OutputDirectory;
+                outputDir = config.OutputDirectory;
                 GetPhotos();
                 update?.Invoke();
             }
@@ -34,19 +36,22 @@ namespace ImageServiceWebApplication.Models
 
         public void GetPhotos()
         {
-            if (m_outputDir == "")
+            //if outputDir is empty, return
+            if (outputDir == "")
             {
                 return;
             }
-            string thumbnailDir = m_outputDir + "\\Thumbnails";
-            if (!Directory.Exists(thumbnailDir))
+            //get thumbDir
+            string thumbDir = outputDir + "\\Thumbnails";
+            //if directory not exist, return
+            if (!Directory.Exists(thumbDir))
             {
                 return;
             }
-            DirectoryInfo di = new DirectoryInfo(thumbnailDir);
+            DirectoryInfo info = new DirectoryInfo(thumbDir);
             
             string[] validExtensions = { ".jpg", ".png", ".gif", ".bmp"};
-            foreach (DirectoryInfo yearDirInfo in di.GetDirectories())
+            foreach (DirectoryInfo yearDirInfo in info.GetDirectories())
             {
                 if (!Path.GetDirectoryName(yearDirInfo.FullName).EndsWith("Thumbnails"))
                 {
