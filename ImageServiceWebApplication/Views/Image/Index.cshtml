@@ -15,25 +15,25 @@
         <p>Offline</p>
     }
 
-<h4>Num of pics in outputDir: @ViewBag.NumofPics</h4>
+<h4>Number of pictures in folder: @ViewBag.TotalPics</h4>
 
 <h2>Image View</h2>
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Students[0].FirstName)
+            @Html.DisplayNameFor(model => model.StudentsInfo[0].FirstName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Students[0].LastName)
+            @Html.DisplayNameFor(model => model.StudentsInfo[0].LastName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Students[0].ID)
+            @Html.DisplayNameFor(model => model.StudentsInfo[0].ID)
         </th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model.Students)
+    @foreach (var item in Model.StudentsInfo)
     {
         <tr>
             <td>

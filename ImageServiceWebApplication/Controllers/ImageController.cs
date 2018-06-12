@@ -19,7 +19,7 @@ namespace ImageServiceWebApplication.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            ViewBag.NumofPics = ImageModel.GetNumOfPics();   ///////**************TO BE CHANGED**********
+            ViewBag.TotalPics = ImageModel.GetNumOfPics();
             return View(imageModel);
         }
     }
