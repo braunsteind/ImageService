@@ -1,4 +1,4 @@
-﻿namespace ImageServiceWebApplication.Enums
+﻿namespace ImageServiceWebApplication.Models
 {
     public enum MessageEnum
     {

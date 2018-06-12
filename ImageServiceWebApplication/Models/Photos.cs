@@ -7,7 +7,7 @@ namespace ImageServiceWebApplication.Models
 {
     public class Photos
     {
-        public event NotifyAboutChange NotifyEvent;
+        public event PropertyChanged update;
         private static Config m_config;
         private string m_outputDir;
         public List<Photo> PhotosList = new List<Photo>();
@@ -16,17 +16,17 @@ namespace ImageServiceWebApplication.Models
         public Photos()
         {
             m_config = new Config();
-            m_config.Notify += Notify;
+            m_config.propertyChanged += Update;
         }
         
 
-        void Notify()
+        void Update()
         {
             if (m_config.OutputDirectory != "")
             {
                 m_outputDir = m_config.OutputDirectory;
                 GetPhotos();
-                NotifyEvent?.Invoke();
+                update?.Invoke();
             }
         }
 

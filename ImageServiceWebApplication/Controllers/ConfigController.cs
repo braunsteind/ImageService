@@ -15,7 +15,7 @@ namespace ImageServiceWebApplication.Controllers
         /// </summary>
         public ConfigController()
         {
-            config.Notify += Update;
+            config.propertyChanged += Update;
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace ImageServiceWebApplication.Models
     {
 
         private static ICommunicationSingleton client { get; set; }
-        public event NotifyAboutChange NotifyEvent;
+        public event PropertyChanged NotifyEvent;
         private static Config m_config;
         private static string m_outputDir;
 
@@ -38,7 +38,7 @@ namespace ImageServiceWebApplication.Models
             NumofPics = 0;
             m_outputDir = "";
             m_config = new Config();
-            m_config.Notify += Notify;
+            m_config.propertyChanged += Update;
             Students = GetStudents();
         }
 
@@ -94,7 +94,7 @@ namespace ImageServiceWebApplication.Models
         }
 
 
-        void Notify()
+        void Update()
         {
             if (m_config.OutputDirectory != "")
             {

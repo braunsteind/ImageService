@@ -1,7 +1,6 @@
 ﻿using ImageService.Infrastructure.Enums;
 using ImageService.Modal;
 using ImageServiceWebApplication.Communication;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,8 +8,8 @@ namespace ImageServiceWebApplication.Models
 {
     public class Config
     {
-        public delegate void NotifyChange();
-        public event NotifyChange Notify;
+        public delegate void PropertyChanged();
+        public event PropertyChanged propertyChanged;
         private static ICommunicationSingleton Communication { get; set; }
 
 
@@ -26,62 +25,51 @@ namespace ImageServiceWebApplication.Models
             Handlers = new ObservableCollection<string>();
             Enabled = false;
             string[] arr = new string[5];
-            CommandRecievedEventArgs request = new CommandRecievedEventArgs((int)CommandEnum.GetConfigCommand, arr, "");
-            Communication.Write(request);
+            CommandRecievedEventArgs command = new CommandRecievedEventArgs((int)CommandEnum.GetConfigCommand, arr, "");
+            Communication.Write(command);
         }
 
-        public void DeleteHandler(string toBeDeleted)
+        public void DeleteHandler(string delete)
         {
-            try
-            {
-                string[] arr = { toBeDeleted };
-                CommandRecievedEventArgs eventArgs = new CommandRecievedEventArgs((int)CommandEnum.CloseHandler, arr, "");
-                Communication.Write(eventArgs);
-            }
-            catch (Exception ex)
-            {
-
-            }
+            string[] arr = { delete };
+            CommandRecievedEventArgs args = new CommandRecievedEventArgs((int)CommandEnum.CloseHandler, arr, "");
+            Communication.Write(args);
         }
 
-        private void UpdateResponse(object sender, CommandRecievedEventArgs responseObj)
+        private void UpdateResponse(object sender, CommandRecievedEventArgs args)
         {
-            if (responseObj != null)
+            if (args != null)
             {
-                switch (responseObj.CommandID)
+                if (args.CommandID == (int)CommandEnum.GetConfigCommand)
                 {
-                    case (int)CommandEnum.GetConfigCommand:
-                        UpdateConfigurations(responseObj);
-                        break;
-                    case (int)CommandEnum.CloseHandler:
-                        CloseHandler(responseObj);
-                        break;
+                    UpdateConfigurations(args);
                 }
-                
-                Notify?.Invoke();
+                else if (args.CommandID == (int)CommandEnum.CloseHandler)
+                {
+                    CloseHandler(args);
+                }
+                propertyChanged?.Invoke();
             }
         }
 
-        private void CloseHandler(CommandRecievedEventArgs responseObj)
+        private void CloseHandler(CommandRecievedEventArgs args)
         {
-            if (Handlers != null && Handlers.Count > 0 && responseObj != null && responseObj.Args != null
-                                 && Handlers.Contains(responseObj.Args[0]))
+            if (Handlers != null && Handlers.Count > 0 && args != null && args.Args != null
+                                 && Handlers.Contains(args.Args[0]))
             {
-                this.Handlers.Remove(responseObj.Args[0]);
+                this.Handlers.Remove(args.Args[0]);
             }
         }
 
-
-
-        private void UpdateConfigurations(CommandRecievedEventArgs responseObj)
+        private void UpdateConfigurations(CommandRecievedEventArgs e)
         {
-            OutputDirectory = responseObj.Args[0];
-            SourceName = responseObj.Args[1];
-            LogName = responseObj.Args[2];
-            int num;
-            int.TryParse(responseObj.Args[3], out num);
-            ThumbnailSize = num;
-            string[] handlers = responseObj.Args[4].Split(';');
+            OutputDirectory = e.Args[0];
+            SourceName = e.Args[1];
+            LogName = e.Args[2];
+            int thumb;
+            int.TryParse(e.Args[3], out thumb);
+            ThumbnailSize = thumb;
+            string[] handlers = e.Args[4].Split(';');
             foreach (string handler in handlers)
             {
                 if (!Handlers.Contains(handler))
@@ -113,9 +101,6 @@ namespace ImageServiceWebApplication.Models
         [Display(Name = "Thumbnail Size")]
         public int ThumbnailSize { get; set; }
 
-        [Required]
-        [DataType(DataType.PhoneNumber)]
-        [Display(Name = "Handlers")]
         public ObservableCollection<string> Handlers { get; set; }
     }
 }

@@ -14,8 +14,8 @@ namespace ImageServiceWebApplication.Controllers
         /// </summary>
         public PhotosController()
         {
-            photos.NotifyEvent -= Update;
-            photos.NotifyEvent += Update;
+            photos.update -= Update;
+            photos.update += Update;
         }
 
         /// <summary>
