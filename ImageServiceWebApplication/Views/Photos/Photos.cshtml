@@ -2,16 +2,30 @@
 
 <h2>Photos</h2>
 
-@foreach (var item in Model)
-{
-    <div class="col-xs-18 col-sm-6 col-md-3">
-        <div class="thumbnail">
-            <img src="@Url.Content(item.ImagePath)" alt="" class="img-circle" height="350">
-            <div class="caption">
-                <h4>@item.Name</h4>
-                <p>year: @item.Year Month:@item.Month</p>
-                <p><a href="@Url.Action("PhotosViewer", new { relativePath = item.ImagePath})" id="btnView" class="btn btn-info btn-xs" role="button">View</a> <a href="@Url.Action("DeletePhoto", new { relativelPath = item.ImagePath})" id="btnDelete" class="btn btn-danger btn-xs" role="button">Delete</a></p>
+<head>
+    <style>
+        .circular-image {
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+
+<div class="container">
+    <div class="row">
+
+        @foreach (var photo in Model)
+        {
+            <div class="col-xs-18 col-sm-6 col-md-3" style="stroke:blue">
+                <div class="thumbnail">
+                    <img src="@Url.Content(photo.ImagePath)" alt="" class="img-circle" width="242" height="200">
+                    <div class="caption">
+                        <h4>@photo.Name</h4>
+                        <p>year: @photo.Year Month:@photo.Month</p>
+                        <p><a href="@Url.Action("PhotosViewer", new { relativePath = photo.ImagePath})" id="btnView" class="btn btn-info btn-xs" role="button">View</a> <a href="@Url.Action("DeletePhoto", new { relativelPath = photo.ImagePath})" id="btnDelete" class="btn btn-danger btn-xs" role="button">Delete</a></p>
+                    </div>
+                </div>
             </div>
-        </div>
+        }
     </div>
-}
+</div>
