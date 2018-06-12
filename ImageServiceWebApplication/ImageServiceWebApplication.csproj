@@ -144,6 +144,7 @@
     <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Controllers\PhotosController.cs" />
+    <Compile Include="Enums\MessageEnum.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

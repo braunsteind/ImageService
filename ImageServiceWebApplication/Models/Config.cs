@@ -9,9 +9,9 @@ namespace ImageServiceWebApplication.Models
 {
     public class Config
     {
-        public delegate void NotifyAboutChange();
-        public event NotifyAboutChange Notify;
-        private static Communication.ICommunicationSingleton Communication { get; set; }
+        public delegate void NotifyChange();
+        public event NotifyChange Notify;
+        private static ICommunicationSingleton Communication { get; set; }
 
 
         public Config()

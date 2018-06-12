@@ -15,11 +15,4 @@ namespace ImageServiceWebApplication.Models
         [Display(Name = "Message")]
         public string Message { get; set; }
     }
-
-    public enum MessageEnum
-    {
-        INFO,
-        FAIL,
-        WARNING
-    }
 }
