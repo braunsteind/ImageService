@@ -39,7 +39,7 @@ namespace ImageServiceWebApplication.Controllers
         {
             foreach (Photo photo in photos.PhotosList)
             {
-                if (photo.ImageRelativePath == relativePath)
+                if (photo.ImagePath == relativePath)
                 {
                     currentPhoto = photo;
                     break;
@@ -57,7 +57,7 @@ namespace ImageServiceWebApplication.Controllers
         {
             foreach (Photo photo in photos.PhotosList)
             {
-                if (photo.ImageRelativePath == relativelPath)
+                if (photo.ImagePath == relativelPath)
                 {
                     currentPhoto = photo;
                     break;
@@ -73,8 +73,8 @@ namespace ImageServiceWebApplication.Controllers
         /// <returns></returns>
         public ActionResult DeleteYes(string relativelPath)
         {
-            System.IO.File.Delete(currentPhoto.ImageUrl);
-            System.IO.File.Delete(currentPhoto.ImageFullUrl);
+            System.IO.File.Delete(currentPhoto.Url);
+            System.IO.File.Delete(currentPhoto.FullPath);
             photos.PhotosList.Remove(currentPhoto);
             return RedirectToAction("Photos");
         }

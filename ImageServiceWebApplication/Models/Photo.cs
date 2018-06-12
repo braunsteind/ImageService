@@ -6,20 +6,21 @@ namespace ImageServiceWebApplication.Models
     public class Photo
     {
         
+           
         public Photo(string imagePath)
         {
-            ImageUrl = imagePath;
-            ImageFullUrl = imagePath.Replace(@"Thumbnails\", string.Empty);
-            Name = Path.GetFileNameWithoutExtension(ImageUrl);
-            Month = Path.GetFileNameWithoutExtension(Path.GetDirectoryName(ImageUrl));
-            Year = Path.GetFileNameWithoutExtension(Path.GetDirectoryName((Path.GetDirectoryName(ImageUrl))));
-            string strDirName;
-            int intLocation, intLength;
-            intLength = imagePath.Length;
-            intLocation = imagePath.IndexOf("OutputDir");
-            strDirName = imagePath.Substring(intLocation, intLength - intLocation);
-            ImageRelativePathThumbnail = @"~\" + strDirName;
-            ImageRelativePath = ImageRelativePathThumbnail.Replace(@"Thumbnails\", string.Empty);
+            Url = imagePath;
+            FullPath = imagePath.Replace(@"Thumbnails\", string.Empty);
+            Name = Path.GetFileNameWithoutExtension(Url);
+            Month = Path.GetFileNameWithoutExtension(Path.GetDirectoryName(Url));
+            Year = Path.GetFileNameWithoutExtension(Path.GetDirectoryName((Path.GetDirectoryName(Url))));
+            string substring;
+            int index, length;
+            length = imagePath.Length;
+            index = imagePath.IndexOf("OutputDir");
+            substring = imagePath.Substring(index, length - index);
+            ThumbnailPath = @"~\" + substring;
+            ImagePath = ThumbnailPath.Replace(@"Thumbnails\", string.Empty);
         }
 
 
@@ -42,22 +43,22 @@ namespace ImageServiceWebApplication.Models
 
         [Required]
         [DataType(DataType.ImageUrl)]
-        [Display(Name = "ImageUrl")]
-        public string ImageUrl { get; set; }
+        [Display(Name = "Url")]
+        public string Url { get; set; }
 
         [Required]
         [DataType(DataType.ImageUrl)]
-        [Display(Name = "ImageRelativePath")]
-        public string ImageRelativePathThumbnail { get; set; }
+        [Display(Name = "FullPath")]
+        public string FullPath { get; set; }
 
         [Required]
         [DataType(DataType.ImageUrl)]
-        [Display(Name = "ImageRelativePath")]
-        public string ImageRelativePath { get; set; }
+        [Display(Name = "ThumbnailPath")]
+        public string ThumbnailPath { get; set; }
 
         [Required]
         [DataType(DataType.ImageUrl)]
-        [Display(Name = "ImageRelativePath")]
-        public string ImageFullUrl { get; set; }
+        [Display(Name = "ImagePath")]
+        public string ImagePath { get; set; }
     }
 }

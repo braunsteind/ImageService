@@ -60,7 +60,7 @@ namespace ImageServiceWebApplication.Models
                     {
                         if (validExtensions.Contains(fileInfo.Extension.ToLower()))
                         {
-                            Photo p = PhotosList.Find(x => (x.ImageUrl == fileInfo.FullName));
+                            Photo p = PhotosList.Find(x => (x.Url == fileInfo.FullName));
                             if (p == null)
                             {
                                 PhotosList.Add(new Photo(fileInfo.FullName));
