@@ -87,7 +87,7 @@ namespace ImageServiceWebApplication.Models
 
                 return sum;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 return 0;
             }
