@@ -29,6 +29,7 @@ namespace ImageService.Server
         public ILoggingService Logging { get { return this.m_logging; } }
         #endregion
 
+        public string[] Directories { get; set; }
 
         /// <summary>
         /// Server constuctor
@@ -42,6 +43,7 @@ namespace ImageService.Server
             //dictionary of folder path:relevant handler
             this.HandlerPerPath = new Dictionary<string, IDirectoryHandler>();
             //creating handlers for each directory
+            Directories = (ConfigurationManager.AppSettings.Get("Handler").Split(';'));
             this.ExtractHandlersFromConfig();
         }
 
@@ -54,7 +56,7 @@ namespace ImageService.Server
             //extract folders from App.config
             string[] foldersToListen = (ConfigurationManager.AppSettings.Get("Handler").Split(';'));
             //loop on all folders
-            foreach (string directory in foldersToListen)
+            foreach (string directory in Directories)
             {
                 try
                 {

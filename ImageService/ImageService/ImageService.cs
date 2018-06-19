@@ -8,6 +8,7 @@ using ImageService.Controller;
 using ImageService.Server;
 using ImageService.Modal;
 using System.Configuration;
+using ImageService.Communication;
 
 namespace ImageService
 {
@@ -76,6 +77,9 @@ namespace ImageService
                 ImageServer.UpdateOnRemovingHandler += ServiceServer.Update;
                 this.logging.UpdateLogItems += ServiceServer.Update;
                 ServiceServer.StartServer();
+                ITCPClientHandler tcpClientHandler = new TCPClientHandler(controller, logging);
+                ITCPServer tcpServer = new TCPServer(7999, logging, tcpClientHandler);
+                tcpServer.Start();
 
             }
             catch (Exception e)
