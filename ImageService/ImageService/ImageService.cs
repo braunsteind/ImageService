@@ -79,7 +79,7 @@ namespace ImageService
                 ServiceServer.StartServer();
                 //TCP server starting
                 ITCPClientHandler tcpHandler = new TCPClientHandler(controller, logging);
-                ITCPServer tcpServer = new TCPServer(7999, logging, tcpHandler);
+                ITCPServer tcpServer = new TCPServer(7000, logging, tcpHandler);
                 tcpServer.StartServer();
 
             }

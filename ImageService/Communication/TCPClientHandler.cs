@@ -12,88 +12,84 @@ namespace ImageService.Communication
 {
     class TCPClientHandler : ITCPClientHandler
     {
+        //properties
         IImageController ImageController { get; set; }
         ILoggingService LoggingService { get; set; }
-        private bool m_isStopped = false;
+        private bool isStopped = false;
         public static Mutex Mutex { get; set; }
 
-       
+       /// <summary>
+       /// Constructor
+       /// </summary>
+       /// <param name="imageController"></param>
+       /// <param name="logging"></param>
         public TCPClientHandler(IImageController imageController, ILoggingService logging)
         {
             this.ImageController = imageController;
             this.LoggingService = logging;
-
         }
         
-      
+        /// <summary>
+        /// Handle client function, using threads(tasks)
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="clientList"></param>
         public void HandleClient(TcpClient client, List<TcpClient> clientList)
         {
             try
             {
-
                 new Task(() =>
                 {
                     try
                     {
-                        while (!m_isStopped)
+                        while (!isStopped)
                         {
-                            NetworkStream stream = client.GetStream();
-                            string finalNameString = GetFileName(stream);
-                            Byte[] confirmation = new byte[1];
-                            confirmation[0] = 1;
-                            stream.Write(confirmation, 0, 1);
-                            List<Byte> finalbytes = GetImageBytes(stream);
-                            File.WriteAllBytes(ImageController.Server.Directories[0] + @"\" + finalNameString + ".jpg", finalbytes.ToArray());
+                            //bytes communication instead of strings
+                            NetworkStream ns = client.GetStream();
+                            Byte[] temp = new Byte[1];
+                            List<Byte> fileName = new List<byte>();
+                            do
+                            {
+                                ns.Read(temp, 0, 1);
+                                fileName.Add(temp[0]);
+                            } while (ns.DataAvailable);
+                            string name = Path.GetFileNameWithoutExtension(System.Text.Encoding.UTF8.GetString(fileName.ToArray()));
+
+                            Byte[] confirm = new byte[1];
+                            confirm[0] = 1;
+                            ns.Write(confirm, 0, 1);
+
+                            List<Byte> bytesArray = new List<byte>();
+                            Byte[] tempBytes;
+                            Byte[] data = new Byte[6790];
+                            int i = 0;
+                            //getting the images in bytes
+                            do
+                            {
+                                i = ns.Read(data, 0, data.Length);
+                                tempBytes = new byte[i];
+                                for (int n = 0; n < i; n++)
+                                {
+                                    tempBytes[n] = data[n];
+                                    bytesArray.Add(tempBytes[n]);
+                                }
+                                System.Threading.Thread.Sleep(300);
+                            } while (ns.DataAvailable || i == data.Length);
+
+                            File.WriteAllBytes(ImageController.Server.Directories[0] + @"\" + name + ".jpg", bytesArray.ToArray());
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception e)
                     {
                         clientList.Remove(client);
-                        LoggingService.Log(ex.ToString(), MessageTypeEnum.FAIL);
+                        LoggingService.Log(e.Message, MessageTypeEnum.FAIL);
                         client.Close();
                     }
                 }).Start();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                LoggingService.Log(ex.ToString(), MessageTypeEnum.FAIL);
             }
-        }
-
-        private string GetFileName(NetworkStream stream)
-        {
-            Byte[] temp = new Byte[1];
-            List<Byte> fileName = new List<byte>();
-            do
-            {
-                stream.Read(temp, 0, 1);
-                fileName.Add(temp[0]);
-            } while (stream.DataAvailable);
-
-            return Path.GetFileNameWithoutExtension(System.Text.Encoding.UTF8.GetString(fileName.ToArray()));
-
-        }
-
-      
-        private List<Byte> GetImageBytes(NetworkStream stream)
-        {
-            List<Byte> bytesArr = new List<byte>();
-            Byte[] tempForReadBytes;
-            Byte[] data = new Byte[6790];
-            int i = 0;
-
-            do
-            {
-                i = stream.Read(data, 0, data.Length);
-                tempForReadBytes = new byte[i];
-                for (int n = 0; n < i; n++)
-                {
-                    tempForReadBytes[n] = data[n];
-                    bytesArr.Add(tempForReadBytes[n]);
-                }
-                System.Threading.Thread.Sleep(300);
-            } while (stream.DataAvailable || i == data.Length);
-            return bytesArr;
         }
     }
 }
