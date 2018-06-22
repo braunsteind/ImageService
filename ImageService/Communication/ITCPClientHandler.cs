@@ -9,6 +9,6 @@ namespace ImageService.Communication
 {
     interface ITCPClientHandler
     {
-        void HandleClient(TcpClient client, List<TcpClient> clients);
+        void HandleClient(TcpClient client, List<TcpClient> clientList);
     }
 }

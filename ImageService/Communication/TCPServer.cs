@@ -1,10 +1,10 @@
-﻿using ImageService.Logging;
+﻿using System.Net;
+using System.Net.Sockets;
+using System;
+using ImageService.Logging;
 using ImageService.Logging.Modal;
 using ImageService.Server;
-using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,67 +12,65 @@ namespace ImageService.Communication
 {
     class TCPServer : ITCPServer
     {
-
-        ILoggingService Logging { get; set; }
+        //class members
+        string localIP = "127.0.0.1";
+        ILoggingService LoggingService { get; set; }
         int Port { get; set; }
         TcpListener Listener { get; set; }
-        ITCPClientHandler Ch { get; set; }
+        ITCPClientHandler Handler { get; set; }
+        private static Mutex mutexLock = new Mutex();
         private List<TcpClient> clients = new List<TcpClient>();
-        private static Mutex m_mutex = new Mutex();
+
 
         /// <summary>
-        /// ImageServiceSrv constructor.
+        /// Constuctor
         /// </summary>
-        /// <param name="port">port num</param>
-        /// <param name="logging">ILoggingService obj</param>
-        /// <param name="ch">IClientHandler obj</param>
+        /// <param name="port"></param>
+        /// <param name="logging"></param>
+        /// <param name="ch"></param>
         public TCPServer(int port, ILoggingService logging, ITCPClientHandler ch)
         {
             this.Port = port;
-            this.Logging = logging;
-            this.Ch = ch;
-            ClientHandler.MutexLock = m_mutex;
+            this.LoggingService = logging;
+            this.Handler = ch;
+            ClientHandler.MutexLock = mutexLock;
         }
 
         /// <summary>
-        /// Start function.
-        /// lissten to new clients.
+        /// Starting server function
         /// </summary>
-        public void Start()
+        public void StartServer()
         {
             try
             {
-                IPEndPoint ep = new
-                IPEndPoint(IPAddress.Parse("127.0.0.1"), Port);
+                //initializing network compopnents
+                IPEndPoint ep = new IPEndPoint(IPAddress.Parse(localIP), Port);
                 Listener = new TcpListener(ep);
-
                 Listener.Start();
-                Logging.Log("Waiting for client connections...", MessageTypeEnum.INFO);
+                //accepting connections
                 Task task = new Task(() =>
                 {
                     while (true)
                     {
                         try
                         {
-                            TcpClient client = Listener.AcceptTcpClient();
-                            Logging.Log("Got new connection", MessageTypeEnum.INFO);
-                            clients.Add(client);
-                            Ch.HandleClient(client, clients);
+                            TcpClient newClient = Listener.AcceptTcpClient();
+                            clients.Add(newClient);
+                            Handler.HandleClient(newClient, clients);
                         }
-                        catch (Exception ex)
+                        catch (Exception e)
                         {
+                            LoggingService.Log("Failed accepting clients " + e.Message, MessageTypeEnum.FAIL);
                             break;
                         }
                     }
-                    Logging.Log("Server stopped", MessageTypeEnum.INFO);
                 });
                 task.Start();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logging.Log(ex.ToString(), MessageTypeEnum.FAIL);
+                LoggingService.Log("Failed starting server " + e.Message, MessageTypeEnum.FAIL);
             }
         }
-
     }
 }

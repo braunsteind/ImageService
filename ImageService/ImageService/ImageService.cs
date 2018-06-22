@@ -77,9 +77,10 @@ namespace ImageService
                 ImageServer.UpdateOnRemovingHandler += ServiceServer.Update;
                 this.logging.UpdateLogItems += ServiceServer.Update;
                 ServiceServer.StartServer();
-                ITCPClientHandler tcpClientHandler = new TCPClientHandler(controller, logging);
-                ITCPServer tcpServer = new TCPServer(7999, logging, tcpClientHandler);
-                tcpServer.Start();
+                //TCP server starting
+                ITCPClientHandler tcpHandler = new TCPClientHandler(controller, logging);
+                ITCPServer tcpServer = new TCPServer(7999, logging, tcpHandler);
+                tcpServer.StartServer();
 
             }
             catch (Exception e)

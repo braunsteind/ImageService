@@ -8,6 +8,6 @@ namespace ImageService.Communication
 {
     interface ITCPServer
     {
-        void Start();
+        void StartServer();
     }
 }
